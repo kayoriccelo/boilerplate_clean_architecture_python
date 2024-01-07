@@ -1,9 +1,12 @@
+from dataclasses import dataclass
 from typing import List
 
 
+@dataclass
 class Management:
     description: str = None
     payout: float = 0
+    value_investing: float = 0
     stop_loss: float = 0
     stop_win: float = 0
     time_candle: int = 0
@@ -15,6 +18,7 @@ class Management:
     cycles: List[int] = []
 
 
+@dataclass
 class ManagementByStrategy:
     use_candle_color_filter: bool = False
     initial_candle_color_filter: float = 0
@@ -42,6 +46,7 @@ class ManagementByStrategy:
     management: int = None
 
 
+@dataclass
 class ManagementAssertiveness:
     initial: float = 0
     final: float = 0

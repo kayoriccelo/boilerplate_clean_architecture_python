@@ -1,6 +1,8 @@
+from dataclasses import dataclass
 from typing import List
 
 
+@dataclass
 class Cycle:
     sequence: int = None
     status: int = None
@@ -10,8 +12,8 @@ class Cycle:
     martingale_multipler: float = 0
     martingale_reverse: bool = False
     
-    soros: bool = False
-    soros_levels: int = 0
-    soros_percentage_profit: float = 0
+    serums: bool = False
+    serums_levels: int = 0
+    serums_percentage_profit: float = 0
     
     account: int = None
