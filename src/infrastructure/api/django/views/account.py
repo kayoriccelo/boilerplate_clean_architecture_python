@@ -1,4 +1,4 @@
-from src.infrastructure.api.common.views import (
+from src.infrastructure.api.django.views.base import (
     BaseCreateViewSet, BaseDeleteViewSet, BaseGetViewSet, BaseListViewSet, BaseUpdateViewSet
 )
 from src.infrastructure.orm.django.account.repositories import AccountModelRepository
