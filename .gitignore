@@ -1,0 +1,4 @@
+__pycache__/
+staticfiles/
+src/infrastructure/database/
+db.sqlite3
