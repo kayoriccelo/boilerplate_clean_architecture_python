@@ -5,12 +5,10 @@ from src.use_cases.account import AccountUseCase
 
 
 class AccountController:
-    def __init__(self, use_case: AccountUseCase):
-        self.use_case = use_case
+    def __init__(self, repository: object):
+        self.use_case = AccountUseCase(repository)
 
-    def get(self, pk: str) -> Tuple[dict, int]:
-        pk = pk.upper()
-
+    def get(self, pk: int) -> Tuple[dict, int]:
         try:
             account = self.use_case.get(pk)
 
@@ -26,11 +24,16 @@ class AccountController:
         return accounts, HTTPStatus.OK.value
 
     def create(self, data: dict) -> int:
-        self.use_case.create()
+        self.use_case.create(data)
         
         return HTTPStatus.OK.value
 
     def update(self, data: dict) -> int:
         self.use_case.update(data)
+
+        return HTTPStatus.OK.value
+
+    def delete(self, pk: int) -> int:
+        self.use_case.delete(pk)
 
         return HTTPStatus.OK.value
