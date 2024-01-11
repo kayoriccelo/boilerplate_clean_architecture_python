@@ -5,7 +5,7 @@ from datetime import datetime
 @dataclass
 class Account:
     id: int = None
-    created: datetime = None
+    created: datetime = datetime.now()
     first_name: str = None
     last_name: str = None
     number_identity: str = None
