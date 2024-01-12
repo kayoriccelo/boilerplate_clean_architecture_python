@@ -11,20 +11,20 @@ class BaseBusiness:
     def get(self, pk: int) -> object:
         return self.repository.get(pk)
 
-    def get_availables(self, page: int, page_size: int) -> List[object]:
+    def get_availables(self, page: int, page_size: int) -> dict:
         availables = self.repository.get_availables()
 
         pages = []
-        data = []
+        results = []
         
         if len(availables) > 0:
             pages = [availables[i:i+page_size] for i in range(0, len(availables), page_size)]
-            data = pages[page - 1]
+            results = pages[page - 1]
         
         return {
-            'total': len(availables),
+            'count': len(availables),
             'pages': len(pages),
-            'data': data
+            'results': results
         }
 
     def create(self, **kwargs):

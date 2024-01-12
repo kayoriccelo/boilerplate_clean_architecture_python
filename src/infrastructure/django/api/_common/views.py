@@ -1,3 +1,4 @@
+import json
 from django.http import HttpRequest, HttpResponse
 from django.views import View
 
@@ -22,13 +23,15 @@ class BaseListViewSet(BaseViewSet, View):
 
         payload, status = self.controller.list(page, page_size)
 
-        data = self.serializer.dumps([account for account in payload['data']])
+        results = self.serializer.dump([item for item in payload['results']])
 
-        return HttpResponse({
-            'total': payload['total'],
-            'pages': payload['pages'],
-            'data': data
-        }, content_type='application/json', status=status)
+        data = json.dumps({
+            'results': results,
+            'count': payload['count'],
+            'pages': payload['pages']
+        }, indent=4)
+
+        return HttpResponse(data, content_type='application/json', status=status)
     
 
 class BaseCreateViewSet(BaseViewSet, View):

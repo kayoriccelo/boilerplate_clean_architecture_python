@@ -15,7 +15,6 @@ class BaseController:
         except Exception as err:
             return {'error': err.message}, HTTPStatus.NOT_FOUND.value
 
-        
         return instance, HTTPStatus.OK.value
 
     def list(self, page: int, page_size: int) -> Tuple[list, int]:
