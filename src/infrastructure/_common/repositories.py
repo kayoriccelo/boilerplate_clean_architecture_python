@@ -2,6 +2,8 @@
 import dataclasses
 from typing import List
 
+from src.core.exceptions import RepositoryException
+
 
 class BaseModelRepository:
     class_model = None
@@ -11,7 +13,7 @@ class BaseModelRepository:
         instance = self.class_model.objects.filter(pk=pk).values().first()
         
         if not instance:
-            raise Exception(f'{pk} pk does not exist.')
+            raise RepositoryException(f'{pk} pk does not exist.')
         
         return self.class_entity(**instance)
 
@@ -25,7 +27,7 @@ class BaseModelRepository:
             self.class_model.objects.create(**instance_dict)
 
         except:
-            raise Exception('error when trying to create model instance.')
+            raise RepositoryException('error when trying to create model instance.')
 
     def update(self, pk: int, instance: object):
         try:
@@ -34,11 +36,11 @@ class BaseModelRepository:
             self.class_model.objects.filter(pk=pk).update(**instance_dict)
 
         except:
-            raise Exception('error when trying to update model instance.')
+            raise RepositoryException('error when trying to update model instance.')
         
     def delete(self, pk: int):
         try:
             self.class_model.objects.filter(pk=pk).delete()
 
         except:
-            raise Exception('error when trying to delete model instance.')
+            raise RepositoryException('error when trying to delete model instance.')
