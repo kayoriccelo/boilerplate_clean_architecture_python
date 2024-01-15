@@ -1,5 +1,8 @@
-from http import HTTPStatus
+
+from http.client import BAD_REQUEST, OK
 from typing import Tuple
+
+from src.core.exceptions import RepositoryException, UseCaseException, ValidatorException
 
 
 class BaseController:
@@ -12,43 +15,34 @@ class BaseController:
         try:
             instance = self.business.get(pk)
 
-        except Exception as err:
-            return {'error': err.message}, HTTPStatus.NOT_FOUND.value
+        except RepositoryException as err:
+            # TODO - Kayo: display nice message and send error message to technical control.
+            return {'error': str(err)}, BAD_REQUEST.value
 
-        return instance, HTTPStatus.OK.value
+        except ValidatorException as err:
+            # TODO - Kayo: display nice message and send error message to technical control.
+            return {'error': str(err)}, BAD_REQUEST.value
+
+        except UseCaseException as err:
+            # TODO - Kayo: display nice message and send error message to technical control.
+            return {'error': str(err)}, BAD_REQUEST.value
+
+        return instance, OK.value
 
     def list(self, page: int, page_size: int) -> Tuple[list, int]:
         try:
             instances = self.business.get_availables(page, page_size)
             
-        except Exception as err:
-            return {'error': err.message}, HTTPStatus.BAD_REQUEST.value
-
-        return instances, HTTPStatus.OK.value
-
-    def create(self, **kwargs) -> int:
-        try:
-            self.business.create(**kwargs)
-
-        except Exception as err:
-            return {'error': err.message}, HTTPStatus.BAD_REQUEST.value
+        except RepositoryException as err:
+            # TODO - Kayo: display nice message and send error message to technical control.
+            return {'error': str(err)}, BAD_REQUEST.value
         
-        return HTTPStatus.OK.value
+        except ValidatorException as err:
+            # TODO - Kayo: display nice message and send error message to technical control.
+            return {'error': str(err)}, BAD_REQUEST.value
 
-    def update(self, **kwargs) -> int:
-        try:
-            self.business.update(**kwargs)
+        except UseCaseException as err:
+            # TODO - Kayo: display nice message and send error message to technical control.
+            return {'error': str(err)}, BAD_REQUEST.value
 
-        except Exception as err:
-            return {'error': err.message}, HTTPStatus.BAD_REQUEST.value
-
-        return HTTPStatus.OK.value
-
-    def delete(self, **kwargs) -> int:
-        try:
-            self.business.delete(**kwargs)
-
-        except Exception as err:
-            return {'error': err.message}, HTTPStatus.BAD_REQUEST.value
-
-        return HTTPStatus.OK.value
+        return instances, OK.value
