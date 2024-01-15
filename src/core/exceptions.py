@@ -1,16 +1,31 @@
+class SystemException(Exception):
+    def __init__(self, error, message):
+        self.error = error
+        self.message = message
 
-class ValueObjectExcepiton(Exception): pass
 
-class EntityException(Exception): pass
+class ValueObjectExcepiton(SystemException): pass
 
-class UseCaseException(Exception): pass
 
-class ControllerException(Exception): pass
+class EntityException(SystemException): pass
 
-class ValidatorException(Exception): pass
 
-class PresenterException(Exception): pass
+class UseCaseRuleException(SystemException): pass
 
-class RepositoryException(Exception): pass
 
-class ViewException(Exception): pass
+class UseCaseBusinessException(SystemException): pass
+
+
+class ControllerException(SystemException): pass
+
+
+class ValidatorException(SystemException): pass
+
+
+class PresenterException(SystemException): pass
+
+
+class RepositoryException(SystemException): pass
+
+
+class ViewsetException(SystemException): pass
