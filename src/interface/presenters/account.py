@@ -1,13 +1,12 @@
-from marshmallow import Schema, fields
+from rest_framework import serializers
 
 
-AccountPresenter = Schema.from_dict({
-    'id': fields.Int(required=True),
-    'created': fields.DateTime(required=True),
-    'first_name': fields.Str(required=True),
-    'last_name': fields.String(required=True),
-    'number_identity': fields.String(required=True),
-    'date_birth': fields.DateTime(required=True),
-    'gender': fields.Integer(required=True),
-    'status': fields.Integer(required=True)
-})
+class AccountPresenter(serializers.Serializer):
+    id = serializers.IntegerField()
+    created = serializers.DateTimeField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    number_identity = serializers.CharField()
+    date_birth = serializers.DateField()
+    gender = serializers.IntegerField()
+    status = serializers.IntegerField()

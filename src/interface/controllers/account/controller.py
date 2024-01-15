@@ -1,8 +1,3 @@
-from http.client import BAD_REQUEST, OK
-
-from src.core.exceptions import (
-    EntityException, RepositoryException, UseCaseException, ValidatorException
-)
 from src.interface._common.controller import BaseController
 from src.interface.controllers.account.validators import (
     AccountCreateValidator, AccountUpdateValidator
@@ -17,7 +12,7 @@ class AccountController(BaseController):
     business_class = AccountBusiness
 
     def create(self, **kwargs) -> int:
-        try:
+        def do_create():
             validator = AccountCreateValidator()
             validator.is_valid(kwargs)
 
@@ -25,69 +20,21 @@ class AccountController(BaseController):
 
             self.business.create(account)
 
-        except RepositoryException as err:
-            # TODO - Kayo: display nice message and send error message to technical control.
-            return {'message': str(err)}, BAD_REQUEST.value
-
-        except ValidatorException as err:
-            # TODO - Kayo: display nice message and send error message to technical control.
-            return {'message': str(err)}, BAD_REQUEST.value
-
-        except UseCaseException as err:
-            # TODO - Kayo: display nice message and send error message to technical control.
-            return {'message': str(err)}, BAD_REQUEST.value
-        
-        except EntityException as err:
-            # TODO - Kayo: display nice message and send error message to technical control.
-            return {'message': str(err)}, BAD_REQUEST.value
-        
-        return OK.value
+        return self._to_try(do_create)
 
     def update(self, **kwargs) -> int:
-        try:
+        def do_update():
             validator = AccountUpdateValidator()
             validator.is_valid(kwargs)
 
             account = Account(**self.validator.data)
 
             self.business.update(account)
-
-        except RepositoryException as err:
-            # TODO - Kayo: display nice message and send error message to technical control.
-            return {'message': str(err)}, BAD_REQUEST.value
         
-        except ValidatorException as err:
-            # TODO - Kayo: display nice message and send error message to technical control.
-            return {'message': str(err)}, BAD_REQUEST.value
-
-        except UseCaseException as err:
-            # TODO - Kayo: display nice message and send error message to technical control.
-            return {'message': str(err)}, BAD_REQUEST.value
-        
-        except EntityException as err:
-            # TODO - Kayo: display nice message and send error message to technical control.
-            return {'message': str(err)}, BAD_REQUEST.value
-
-        return OK.value
+        return self._to_try(do_update)
 
     def delete(self, pk: int) -> int:
-        try:
+        def do_delete():
             self.business.delete(pk)
 
-        except RepositoryException as err:
-            # TODO - Kayo: display nice message and send error message to technical control.
-            return {'message': str(err)}, BAD_REQUEST.value
-
-        except ValidatorException as err:
-            # TODO - Kayo: display nice message and send error message to technical control.
-            return {'message': str(err)}, BAD_REQUEST.value
-
-        except UseCaseException as err:
-            # TODO - Kayo: display nice message and send error message to technical control.
-            return {'message': str(err)}, BAD_REQUEST.value
-        
-        except EntityException as err:
-            # TODO - Kayo: display nice message and send error message to technical control.
-            return {'message': str(err)}, BAD_REQUEST.value
-
-        return OK.value
+        return self._to_try(do_delete)
