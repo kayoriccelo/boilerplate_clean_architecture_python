@@ -37,7 +37,7 @@ class BaseValidator:
         self._params = params
 
         if not self._params:
-            raise ValidatorException(f'information required.')
+            raise ValidatorException('', 'information required.')
 
         self._validate()
 
@@ -63,7 +63,7 @@ class BaseValidator:
             for index, error in enumerate(self._errors):
                 message += error if index == len(self._errors) - 1 else f'{error}, '
 
-            raise ValidatorException(f'there are outstanding criticisms: {message}.')
+            raise ValidatorException('', f'there are outstanding criticisms: {message}.')
 
 
 class ValidatorField:
