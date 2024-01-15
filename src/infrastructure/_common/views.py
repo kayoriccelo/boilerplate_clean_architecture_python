@@ -1,5 +1,5 @@
 
-from src.core.exceptions import ViewException
+from src.core.exceptions import ViewsetException
 
 
 class BaseViewSet:
@@ -11,8 +11,8 @@ class BaseViewSet:
         try:
             return self.repository_class()
         
-        except:
-            raise ViewException('error when trying to instantiate the repository.')
+        except Exception as err:
+            raise ViewsetException(err, 'error when trying to instantiate the repository.')
     
     def __start_controller(self):
         repository = self.__start_repository()
@@ -20,8 +20,8 @@ class BaseViewSet:
         try:
             self.controller = self.controller_class(repository)
 
-        except:
-            raise ViewException('error when trying to instantiate the controller.')
+        except Exception as err:
+            raise ViewsetException(err, 'error when trying to instantiate the controller.')
 
     def __init__(self, **kwargs: any) -> None:
         super().__init__(**kwargs)
