@@ -11,7 +11,7 @@ class BaseController:
     def __init__(self, repository: object):
         self.business = self.business_class(repository)
 
-    def _try_executed(self, callback):
+    def _to_try(self, callback):
         try:
             result = callback()
 
@@ -33,10 +33,10 @@ class BaseController:
         def do_get():
             return self.business.get(pk)
         
-        return self._try_executed(do_get)
+        return self._to_try(do_get)
 
     def list(self, page: int, page_size: int) -> Tuple[list, int]:
         def do_list():
             return self.business.get_availables(page, page_size)
         
-        return self._try_executed(do_list)
+        return self._to_try(do_list)
