@@ -1,6 +1,6 @@
 import dataclasses
 
-from src.core.exceptions import UseCaseException
+from src.core.exceptions import UseCaseBusinessException
 
 
 class BaseBusiness:
@@ -17,8 +17,8 @@ class BaseBusiness:
         try:
             instance_entity = self.entity_class(**dataclasses.asdict(instance_model))
         
-        except Exception as e:
-            raise UseCaseException(f'The entity cannot be instantiated. {str(e)}')
+        except Exception as err:
+            raise UseCaseBusinessException(err, 'create the record')
         
         return instance_entity
 
@@ -31,21 +31,21 @@ class BaseBusiness:
         try:
             availables = [self.entity_class(**dataclasses.asdict(available)) for available in availables]
 
-        except Exception as e:
-            raise UseCaseException(f'Entities cannot be instantiated. {str(e)}')
+        except Exception as err:
+            raise UseCaseBusinessException(err, 'create listing records')
         
         if len(availables) > 0:
             try:
                 pages = [availables[i:i+page_size] for i in range(0, len(availables), page_size)]
             
-            except Exception as e:
-                raise UseCaseException(f'Unable to perform pagination. {str(e)}')
+            except Exception as err:
+                raise UseCaseBusinessException(err, 'configure listing pages')
             
             try:
-                results = pages[page - 1]
+                results = pages[page]
 
-            except Exception as e:
-                raise UseCaseException(f'Unable to access the page. {str(e)}')
+            except Exception as err:
+                raise UseCaseBusinessException(err, f'access page {page} of the listing')
         
         return {
             'count': len(availables),
