@@ -61,7 +61,7 @@ class BaseBusiness:
     def update(self, instance: object, **kwargs):
         self.rule.can_update(instance)
 
-        self.repository.create(instance)
+        self.repository.update(instance)
 
     def delete(self, instance: object, **kwargs):
         self.rule.can_delete(instance)

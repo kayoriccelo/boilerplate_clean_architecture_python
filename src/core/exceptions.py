@@ -19,7 +19,11 @@ class UseCaseBusinessException(SystemException): pass
 class ControllerException(SystemException): pass
 
 
-class ValidatorException(SystemException): pass
+class ValidatorException(SystemException):
+    def __init__(self, error, message, errors):
+        super().__init__(error, message)
+
+        self.errors = errors
 
 
 class PresenterException(SystemException): pass

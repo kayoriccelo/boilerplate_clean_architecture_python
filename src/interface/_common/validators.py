@@ -28,8 +28,8 @@ class BaseValidator:
         self._errors = []
         self._data = {}
 
-    def set_errors(self, error):
-        self._errors.append(error)
+    def set_errors(self, field_name, error):
+        self._errors.append({'field_name': field_name, 'error': error})
 
     def is_valid(self, params, show_errors=True):
         self.clean_attributes()
@@ -58,12 +58,7 @@ class BaseValidator:
 
     def show_errors(self):
         if len(self._errors) > 0:
-            message = ''
-
-            for index, error in enumerate(self._errors):
-                message += error if index == len(self._errors) - 1 else f'{error}, '
-
-            raise ValidatorException('', f'there are outstanding criticisms: {message}.')
+            raise ValidatorException('', 'There are outstanding criticisms.', self._errors)
 
 
 class ValidatorField:
@@ -101,14 +96,14 @@ class DateValidatorField(ValidatorField):
 
         if not date or not bool(date):
             if self.required:
-                self.validator.set_errors(f'{self.label} not informed.')
+                self.validator.set_errors(self.field_name, f'{self.label} not informed.')
 
         else:
             try:
                 date = datetime.strptime(date, '%Y-%m-%d')
 
             except:
-                self.validator.set_errors(f'{self.label} is in an invalid format.')
+                self.validator.set_errors(self.field_name, f'{self.label} is in an invalid format.')
 
         return date
 
@@ -121,14 +116,14 @@ class DateTimeValidatorField(ValidatorField):
 
         if not date or not bool(date):
             if self.required:
-                self.validator.set_errors(f'{self.label} not informed.')
+                self.validator.set_errors(self.field_name, f'{self.label} not informed.')
 
         else:
             try:
                 date = datetime.strptime(date, '%Y-%m-%dT%H:%M')
 
             except:
-                self.validator.set_errors(f'{self.label} is in an invalid format.')
+                self.validator.set_errors(self.field_name, f'{self.label} is in an invalid format.')
 
         return date
 
@@ -148,7 +143,7 @@ class ChoiceValidatorField(ValidatorField):
 
         if not choice or not bool(choice):
             if self.required:
-                self.validator.set_errors(f'{self.label} not informed.')
+                self.validator.set_errors(self.field_name, f'{self.label} not informed.')
 
         else:
             try:
@@ -158,10 +153,10 @@ class ChoiceValidatorField(ValidatorField):
                     choice = self.choices.__getitem__(choice - 1)[0]
 
                 except:
-                    self.validator.set_errors(f"{self.label} it's an invalid choice.")
+                    self.validator.set_errors(self.field_name,f"{self.label} it's an invalid choice.")
 
             except:
-                self.validator.set_errors(f'{self.label} is in an invalid format.')
+                self.validator.set_errors(self.field_name, f'{self.label} is in an invalid format.')
 
         return choice
 
@@ -174,7 +169,7 @@ class CharValidatorField(ValidatorField):
 
         if not value or not bool(value):
             if self.required:
-                self.validator.set_errors(f'{self.label} not informed.')
+                self.validator.set_errors(self.field_name, f'{self.label} not informed.')
 
         return value
 
@@ -194,10 +189,10 @@ class FileValidatorField(ValidatorField):
 
         if not anexo or not bool(anexo):
             if self.required:
-                self.validator.set_errors(f'{self.label} not informed.')
+                self.validator.set_errors(self.field_name, f'{self.label} not informed.')
 
         else:
             if not 'pdf' in anexo.content_type:
-                self.validator.set_errors(f'{self.label} is in an invalid format.')
+                self.validator.set_errors(self.field_name, f'{self.label} is in an invalid format.')
 
         return anexo
