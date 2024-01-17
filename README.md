@@ -15,7 +15,35 @@
 
 ## Usage
 
- ...
+- Domain
+  - Entities
+    - ...
+    
+- Infrastructure
+  - API
+    - ...
+  - ORM
+    - ...
+  - Settings
+    - ...
+    
+- Interface
+  - Controllers
+    - ...
+  - Presenters
+    - ...
+    
+- Use Cases
+  - Rules
+    - ...
+  - Business
+    - ...
+    
+- Core
+  - Messages
+    - ...
+  - Exceptions
+    - ...
 
 ## Support
 
