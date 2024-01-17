@@ -3,17 +3,16 @@ from src.use_cases._common.rules import BaseRules
 
 class AccountRules(BaseRules):
     def __account_already_created(self):
-        if False: # TODO - Kayo: create rule
+        repository = self._get_value_in_kwargs('repository')
+        account = self._get_value_in_kwargs('account')
+
+        account_exists = repository.account_exists(account)
+
+        if account_exists:
             return self.execute_exception('account already created')
         
         return False
     
-    def __account_is_being_used(self):
-        if False: # TODO - Kayo: create rule
-            return self.execute_exception('account is beging used')
-        
-        return False
-
     def can_create(self, **kwargs):
         self._kwargs = kwargs
 
@@ -28,7 +27,5 @@ class AccountRules(BaseRules):
     
     def can_delete(self, **kwargs):
         self._kwargs = kwargs
-        
-        self.execute_callback(self.__account_is_being_used)
-
+    
         return self._can
