@@ -29,11 +29,6 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'src.infrastructure.orm.django.apps.account',
-    'src.infrastructure.orm.django.apps.active',
-    'src.infrastructure.orm.django.apps.broker',
-    'src.infrastructure.orm.django.apps.cycle',
-    'src.infrastructure.orm.django.apps.management',
-    'src.infrastructure.orm.django.apps.strategy',
 ]
 
 MIDDLEWARE = [
