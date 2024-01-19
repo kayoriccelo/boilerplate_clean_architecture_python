@@ -8,7 +8,7 @@ class BaseRules:
     _kwargs = {}
 
     def _get_value_in_kwargs(self, name, required=True):
-        value = self._kwargs.get(value, None)
+        value = self._kwargs.get(name, None)
 
         if not value and required:
             raise Exception(f'{name} not found in {type(self).__name__}')

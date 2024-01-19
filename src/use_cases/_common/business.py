@@ -53,17 +53,17 @@ class BaseBusiness:
             'results': results
         }
 
-    def create(self, instance: object, **kwargs):
-        self.rule.can_create(instance)
+    def create(self, **kwargs):
+        self.rule.can_create(**kwargs)
 
-        self.repository.create(instance)
+        self.repository.create(kwargs['instance'])
 
-    def update(self, instance: object, **kwargs):
-        self.rule.can_update(instance)
+    def update(self, **kwargs):
+        self.rule.can_update(**kwargs)
 
-        self.repository.update(instance)
+        self.repository.update(kwargs['instance'])
 
-    def delete(self, instance: object, **kwargs):
-        self.rule.can_delete(instance)
+    def delete(self, **kwargs):
+        self.rule.can_delete(**kwargs)
 
-        self.repository.delete(instance)
+        self.repository.delete(kwargs['instance'])

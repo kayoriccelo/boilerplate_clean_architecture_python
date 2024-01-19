@@ -4,7 +4,7 @@ from src.use_cases._common.rules import BaseRules
 class AccountRules(BaseRules):
     def __account_already_created(self):
         repository = self._get_value_in_kwargs('repository')
-        account = self._get_value_in_kwargs('account')
+        account = self._get_value_in_kwargs('instance')
 
         account_exists = repository.account_exists(account)
 

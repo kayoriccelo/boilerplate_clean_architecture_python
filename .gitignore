@@ -3,3 +3,4 @@ staticfiles/
 src/infrastructure/database/
 db.sqlite3
 .vscode/
+.pytest_cache
