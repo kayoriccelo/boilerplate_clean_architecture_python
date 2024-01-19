@@ -22,20 +22,20 @@ class BaseModelRepository:
     def get_availables(self) -> List[object]:
         return list(map(lambda value: self.class_entity(**value), self.class_model.objects.values()))
 
-    def create(self, **kwargs):
+    def create(self, instance: object):
         try:
-            instance_dict = dataclasses.asdict(**kwargs)
+            instance_dict = dataclasses.asdict(instance)
         
             self.class_model.objects.create(**instance_dict)
 
         except Exception as err:
             raise RepositoryException(err, 'error when trying to create model instance')
 
-    def update(self, pk: int, instance: object):
+    def update(self, instance: object):
         try:
             instance_dict = dataclasses.asdict(instance)
 
-            self.class_model.objects.filter(pk=pk).update(**instance_dict)
+            self.class_model.objects.filter(id=instance.id).update(**instance_dict)
 
         except Exception as err:
             raise RepositoryException(err, 'error when trying to update model instance')
