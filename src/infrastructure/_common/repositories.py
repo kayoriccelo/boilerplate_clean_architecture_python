@@ -2,6 +2,8 @@
 import dataclasses
 from typing import List
 
+from django.forms import model_to_dict
+
 from src.core.exceptions import RepositoryException
 
 
@@ -26,7 +28,11 @@ class BaseModelRepository:
         try:
             instance_dict = dataclasses.asdict(instance)
         
-            self.class_model.objects.create(**instance_dict)
+            instance_model = self.class_model.objects.create(**instance_dict)
+
+            instance_dict = model_to_dict(instance_model, fields=[field.name for field in instance_model._meta.fields])
+
+            return self.class_entity(**instance_dict)
 
         except Exception as err:
             raise RepositoryException(err, 'error when trying to create model instance')
@@ -40,9 +46,9 @@ class BaseModelRepository:
         except Exception as err:
             raise RepositoryException(err, 'error when trying to update model instance')
         
-    def delete(self, pk: int):
+    def delete(self, instance: object):
         try:
-            self.class_model.objects.filter(pk=pk).delete()
+            self.class_model.objects.filter(id=instance.id).delete()
 
         except Exception as err:
             raise RepositoryException(err, 'error when trying to delete model instance')

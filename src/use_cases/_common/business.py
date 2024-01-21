@@ -38,10 +38,6 @@ class BaseBusiness:
             try:
                 pages = [availables[i:i+page_size] for i in range(0, len(availables), page_size)]
             
-            except Exception as err:
-                raise UseCaseBusinessException(err, 'configure listing pages')
-            
-            try:
                 results = pages[page]
 
             except Exception as err:
@@ -56,12 +52,12 @@ class BaseBusiness:
     def create(self, **kwargs):
         self.rule.can_create(**kwargs)
 
-        self.repository.create(kwargs['instance'])
+        return self.repository.create(kwargs['instance'])
 
     def update(self, **kwargs):
         self.rule.can_update(**kwargs)
 
-        self.repository.update(kwargs['instance'])
+        return self.repository.update(kwargs['instance'])
 
     def delete(self, **kwargs):
         self.rule.can_delete(**kwargs)

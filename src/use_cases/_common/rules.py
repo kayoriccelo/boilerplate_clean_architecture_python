@@ -1,5 +1,5 @@
 
-from src.core.exceptions import UseCaseRuleException
+from src.core.exceptions import SystemException, UseCaseRuleException
 
 
 class BaseRules:
@@ -11,7 +11,7 @@ class BaseRules:
         value = self._kwargs.get(name, None)
 
         if not value and required:
-            raise Exception(f'{name} not found in {type(self).__name__}')
+            raise SystemException(None, f'{name} not found in {type(self).__name__}')
         
         return value
 
