@@ -8,6 +8,7 @@
 - [Usage](#usage)
 - [Support](#support)
 - [Contributing](#contributing)
+- [Diagram](#diagram)
 
 ## Installation
 
