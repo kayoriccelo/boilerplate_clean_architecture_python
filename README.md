@@ -52,3 +52,7 @@
 ## Contributing
 
  ...
+
+## Diagram
+
+[boilerplate_clean_architecture_python.pdf](https://github.com/kayoriccelo/boilerplate_clean_architecture_python/files/14010544/boilerplate_clean_architecture_python.pdf)
