@@ -55,5 +55,6 @@
 
 ## Diagram
 
-![boilerplate_clean_architecture_python drawio](https://github.com/kayoriccelo/boilerplate_clean_architecture_python/assets/19672365/01d095ab-3c87-4b6d-b8fa-dd08d7743743)
+![boilerplate_clean_architecture_python drawio](https://github.com/kayoriccelo/boilerplate_clean_architecture_python/assets/19672365/6faabac4-a728-4c68-aef1-fe13f1fe4cbe)
+
 
