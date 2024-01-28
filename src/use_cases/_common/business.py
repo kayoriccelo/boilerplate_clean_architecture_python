@@ -1,4 +1,3 @@
-import dataclasses
 
 from src.core.exceptions import UseCaseBusinessException
 
@@ -12,10 +11,10 @@ class BaseBusiness:
         self.rule = self.rules_class()
 
     def get(self, pk: int) -> object:
-        instance_model = self.repository.get(pk)
+        instance = self.repository.get(pk)
 
         try:
-            instance_entity = self.entity_class(**dataclasses.asdict(instance_model))
+            instance_entity = self.entity_class(**instance.asdict())
         
         except Exception as err:
             raise UseCaseBusinessException(err, 'create the record')
@@ -29,7 +28,7 @@ class BaseBusiness:
         availables = self.repository.get_availables()
 
         try:
-            availables = [self.entity_class(**dataclasses.asdict(available)) for available in availables]
+            availables = [self.entity_class(**available.asdict()) for available in availables]
 
         except Exception as err:
             raise UseCaseBusinessException(err, 'create listing records')
@@ -38,7 +37,7 @@ class BaseBusiness:
             try:
                 pages = [availables[i:i+page_size] for i in range(0, len(availables), page_size)]
             
-                results = pages[page]
+                results = pages[page - 1]
 
             except Exception as err:
                 raise UseCaseBusinessException(err, f'access page {page} of the listing')
@@ -62,4 +61,4 @@ class BaseBusiness:
     def delete(self, **kwargs):
         self.rule.can_delete(**kwargs)
 
-        self.repository.delete(kwargs['instance'])
+        return self.repository.delete(kwargs['instance'])
