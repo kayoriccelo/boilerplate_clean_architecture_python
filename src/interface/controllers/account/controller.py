@@ -1,10 +1,9 @@
+
 from src.interface._common.controller import BaseController
 from src.interface.controllers.account.validators import (
     AccountCreateValidator, AccountUpdateValidator
 )
-
 from src.use_cases.account.business import AccountBusiness
-
 from src.domain.entities.account import Account
 
 
@@ -16,9 +15,9 @@ class AccountController(BaseController):
             validator = AccountCreateValidator()
             validator.is_valid(kwargs)
 
-            account = Account(**self.validator.data)
+            account = Account(**validator.data)
 
-            self.business.create(account)
+            return self.business.create(instance=account, repository=self.business.repository)
 
         return self._to_try(do_create)
 
@@ -27,14 +26,14 @@ class AccountController(BaseController):
             validator = AccountUpdateValidator()
             validator.is_valid(kwargs)
 
-            account = Account(**self.validator.data)
+            account = Account(**validator.data)
 
-            self.business.update(account)
+            return self.business.update(instance=account, repository=self.business.repository)
         
         return self._to_try(do_update)
 
-    def delete(self, pk: int) -> int:
+    def delete(self, **kwargs) -> int:
         def do_delete():
-            self.business.delete(pk)
+            return self.business.delete(**kwargs)
 
         return self._to_try(do_delete)
