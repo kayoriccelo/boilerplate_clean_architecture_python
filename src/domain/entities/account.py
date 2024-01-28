@@ -3,7 +3,10 @@ from datetime import datetime
 from enum import Enum
 
 from src.domain._common.entity import BaseEntity
-from src.domain.values_object import UUIDValue, DateTimeValue, CharValue, ChoiceValue
+from src.domain.values_object import (
+    UUIDValue, DateTimeValue, CharValue, ChoiceValue, DateValue
+)
+
 
 
 class StatusAccount(Enum):
@@ -22,6 +25,6 @@ class Account(BaseEntity):
     first_name = CharValue(max_length=200)
     last_name = CharValue(max_length=200)
     number_identity = CharValue(max_length=20)
-    date_birth = DateTimeValue()
+    date_birth = DateValue()
     gender = ChoiceValue(enum=GenderAccount)
     status = ChoiceValue(enum=StatusAccount, default=StatusAccount.ACTIVE.value)
