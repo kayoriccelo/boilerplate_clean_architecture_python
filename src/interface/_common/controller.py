@@ -1,5 +1,5 @@
 import sys
-from http.client import BAD_REQUEST, OK
+from http.client import INTERNAL_SERVER_ERROR, OK
 from typing import Tuple
 
 from src.core.exceptions import (
@@ -47,30 +47,30 @@ class BaseController:
 
     def _to_try(self, callback):
         try:
-            result = callback()
+            payload = callback()
 
         except ValidatorException as err:
-            return {'type': 'validator', 'message': err.message, 'errors': err.errors}, BAD_REQUEST.value
+            return {'type': 'validator', 'message': err.message, 'errors': err.errors}, INTERNAL_SERVER_ERROR.value
         
         except UseCaseRuleException as err:
-            return {'type': 'rule', 'message': err.message}, BAD_REQUEST.value
+            return {'type': 'rule', 'message': err.message}, INTERNAL_SERVER_ERROR.value
                
         except UseCaseBusinessException as err:
             self._send_email_error(err)
             
-            return {'type': 'business', 'message': INCONSISTENCY_MESSAGE_FOUND % err.message}, BAD_REQUEST.value
+            return {'type': 'business', 'message': INCONSISTENCY_MESSAGE_FOUND % err.message}, INTERNAL_SERVER_ERROR.value
 
         except RepositoryException as err:
             self._send_email_error(err)
             
-            return {'type': 'repository', 'message': err.message}, BAD_REQUEST.value
+            return {'type': 'repository', 'message': INCONSISTENCY_MESSAGE_FOUND_SYSTEM}, INTERNAL_SERVER_ERROR.value
 
         except Exception as err:
             self._send_email_error(err)
             
-            return {'type': 'generic', 'message': INCONSISTENCY_MESSAGE_FOUND_SYSTEM}, BAD_REQUEST.value
+            return {'type': 'generic', 'message': INCONSISTENCY_MESSAGE_FOUND_SYSTEM}, INTERNAL_SERVER_ERROR.value
         
-        return result, OK.value
+        return payload, OK.value
 
     def get(self, pk: int) -> Tuple[dict, int]:
         def do_get():

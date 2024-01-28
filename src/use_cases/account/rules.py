@@ -1,3 +1,4 @@
+
 from src.use_cases._common.rules import BaseRules
 
 

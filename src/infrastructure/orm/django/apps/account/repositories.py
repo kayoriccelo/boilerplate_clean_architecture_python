@@ -1,3 +1,4 @@
+
 from src.domain.entities import Account
 from src.infrastructure._common.repositories import BaseModelRepository
 from src.infrastructure.orm.django.apps.account.models import AccountModel
