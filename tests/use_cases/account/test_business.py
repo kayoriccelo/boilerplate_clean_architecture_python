@@ -1,45 +1,83 @@
-from datetime import datetime
+import pytest
 
 from src.core.exceptions import UseCaseBusinessException
-from src.domain.entities.account import Account
-from src.infrastructure.orm.django.apps.account.repositories import AccountModelRepository
 from src.use_cases.account.business import AccountBusiness
 
 from tests._common.use_case import BaseUseCaseBusinessTest
 
 
+@pytest.mark.order(30000)
 class TestAccountBusiness(BaseUseCaseBusinessTest):
-    entity_class = Account
-    repository_class = AccountModelRepository
     business_class = AccountBusiness
 
-    @property
-    def data(self):
-        return {
-            'id': 1,
-            'first_name': 'Kayo',
-            'last_name': 'Riccelo',
-            'number_identity': '12345678910',
-            'date_birth': datetime(2000, 1, 1),
-            'gender': 1,
-            'status': 1
-        }
-
-    def test_create(self):
+    def test_create(self, account_business, account_entity, account_repository):
         try:
-            self.business.create(instance=self.entity, repository=self.repository)
+            account_business.create(instance=account_entity, repository=account_repository)
 
             assert True
 
         except UseCaseBusinessException:
             assert False
 
-    def test_update(self):
+    def test_update(self, account_business, account_entity, account_repository):
         try:
-            self.entity.first_name = 'Kayo Update'
-            self.entity.last_name = 'Riccelo Update'
+            instance = account_entity
 
-            self.business.update(instance=self.entity, repository=self.repository)
+            instance.first_name = 'Kayo Update'
+            instance.last_name = 'Riccelo Update'
+
+            account_business.update(instance=instance, repository=account_repository)
+
+            assert True
+
+        except UseCaseBusinessException:
+            assert False
+
+    def test_get(self, account_data, account_business):
+        try:
+            account_business.get(account_data['id'])
+
+            assert True
+
+        except UseCaseBusinessException:
+            assert False
+
+    def test_get_create_the_record(self, account_data, account_business):
+        entity_class = account_business.entity_class
+        account_business.entity_class = None
+        
+        try:
+            account_business.get(account_data['id'])
+
+            assert True
+
+        except UseCaseBusinessException as err:
+            assert err.message == 'create the record'
+        
+        finally:
+            account_business.entity_class = entity_class
+
+    def test_get_availables(self, account_business):
+        try:
+            account_business.get_availables(0, 10)
+
+            assert True
+
+        except UseCaseBusinessException:
+            assert False
+
+    def test_get_availables_access_page_listing(self, account_business):
+        try:
+            account_business.get_availables(-1, -1)
+
+            assert False
+
+        except UseCaseBusinessException as err:
+            assert err.message == 'access page -1 of the listing'
+
+    def test_delete(self, account_business, account_entity):
+        try:
+            account_business.delete(instance=account_entity)
 
             assert True
 
