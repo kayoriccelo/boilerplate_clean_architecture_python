@@ -1,3 +1,4 @@
+
 from datetime import datetime
 
 from src.core.exceptions import ValidatorException
@@ -88,19 +89,35 @@ class ValidatorField:
         self.field_name = field_name
 
 
+class UUIDValidatorField(ValidatorField):
+    def validate(self, validator, field_name):
+        super().validate(validator, field_name)
+
+        value = self.get_value()
+
+        return value
+
+
 class DateValidatorField(ValidatorField):
     def validate(self, validator, field_name):
         super().validate(validator, field_name)
 
         date = self.get_value()
 
-        if not date or not bool(date):
+        if not date:
             if self.required:
                 self.validator.set_errors(self.field_name, f'{self.label} not informed.')
 
         else:
             try:
-                date = datetime.strptime(date, '%Y-%m-%d')
+                if type(date).__name__ == 'date':
+                    date = date
+
+                elif type(date).__name__ == 'datetime':
+                    date = date.date()
+
+                else:
+                    date = datetime.strptime(date, '%Y-%m-%d').date()
 
             except:
                 self.validator.set_errors(self.field_name, f'{self.label} is in an invalid format.')
@@ -114,7 +131,7 @@ class DateTimeValidatorField(ValidatorField):
 
         date = self.get_value()
 
-        if not date or not bool(date):
+        if not date:
             if self.required:
                 self.validator.set_errors(self.field_name, f'{self.label} not informed.')
 
@@ -141,7 +158,7 @@ class ChoiceValidatorField(ValidatorField):
 
         choice = self.get_value()
 
-        if not choice or not bool(choice):
+        if not choice:
             if self.required:
                 self.validator.set_errors(self.field_name, f'{self.label} not informed.')
 
@@ -167,7 +184,7 @@ class CharValidatorField(ValidatorField):
 
         value = self.get_value()
 
-        if not value or not bool(value):
+        if not value:
             if self.required:
                 self.validator.set_errors(self.field_name, f'{self.label} not informed.')
 
@@ -187,7 +204,7 @@ class FileValidatorField(ValidatorField):
 
         anexo = self.get_value()
 
-        if not anexo or not bool(anexo):
+        if not anexo:
             if self.required:
                 self.validator.set_errors(self.field_name, f'{self.label} not informed.')
 
