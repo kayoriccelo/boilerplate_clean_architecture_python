@@ -1,7 +1,6 @@
 
 class BasePresenter:
     serializer_class = None
-    data = {}
 
     def __init__(self, serializer_class: any) -> None:
         self.serializer_class = serializer_class
