@@ -2,7 +2,6 @@ from src.infrastructure.api.django._common.viewsets import (
     BaseCreateViewSet, BaseDeleteViewSet, BaseGetViewSet, BaseListViewSet, BaseUpdateViewSet
 )
 from src.infrastructure.orm.django.apps.account.repositories import AccountModelRepository
-from src.interface.presenters import AccountPresenter
 from src.interface.controllers import AccountController
 
 
