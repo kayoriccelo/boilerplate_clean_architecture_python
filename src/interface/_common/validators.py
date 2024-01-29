@@ -202,14 +202,14 @@ class FileValidatorField(ValidatorField):
     def validate(self, validator, field_name):
         super().validate(validator, field_name)
 
-        anexo = self.get_value()
+        attachment = self.get_value()
 
-        if not anexo:
+        if not attachment:
             if self.required:
                 self.validator.set_errors(self.field_name, f'{self.label} not informed.')
 
         else:
-            if not 'pdf' in anexo.content_type:
+            if not 'pdf' in attachment.content_type:
                 self.validator.set_errors(self.field_name, f'{self.label} is in an invalid format.')
 
-        return anexo
+        return attachment
