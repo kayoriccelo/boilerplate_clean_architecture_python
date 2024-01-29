@@ -1,4 +1,3 @@
-import json
 import sys
 from http.client import INTERNAL_SERVER_ERROR, OK
 from typing import Tuple
@@ -11,11 +10,11 @@ from src.core.messages import INCONSISTENCY_MESSAGE_FOUND, INCONSISTENCY_MESSAGE
 
 class BaseController:
     business_class = None
-    persenter_class = None
+    presenter_class = None
     
     def __init__(self, repository: object, serializer_class: object):
         self.business = self.business_class(repository)
-        self.presenter = self.persenter_class(serializer_class)
+        self.presenter = self.presenter_class(serializer_class)
 
     def _send_email_error(self, exception: Exception):
         exc_type, exc_value, exc_traceback = sys.exc_info()
