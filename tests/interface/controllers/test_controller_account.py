@@ -1,6 +1,7 @@
 import pytest
 from http.client import INTERNAL_SERVER_ERROR, OK
 
+from src.infrastructure.api.django.account.serializers import AccountSerializer
 from src.interface.controllers.account.controller import AccountController
 
 from tests._common.controller import BaseControllerTest
@@ -9,6 +10,7 @@ from tests._common.controller import BaseControllerTest
 @pytest.mark.order(40000)
 class TestAccountController(BaseControllerTest):
     controller_class = AccountController
+    serializer_class = AccountSerializer
 
     def test_validator_exception_information_required(self, account_controller):
         payload, status = account_controller.create(**{})
@@ -24,14 +26,14 @@ class TestAccountController(BaseControllerTest):
 
         assert status == OK.value
 
-        assert account_entity.asdict() == payload.asdict()
+        assert self.serializer_class(account_entity).data == payload
 
     def test_update(self, account_data, account_entity, account_controller):
         payload, status = account_controller.update(**account_data, status=1)
 
         assert status == OK.value
 
-        assert account_entity.asdict() == payload.asdict()
+        assert self.serializer_class(account_entity).data == payload
 
     def test_get(self, account_entity, account_controller):
         _, status = account_controller.get(account_entity.id)
