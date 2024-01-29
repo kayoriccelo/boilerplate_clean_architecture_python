@@ -1,4 +1,3 @@
-import pytest
 
 from src.core.exceptions import UseCaseBusinessException
 from src.use_cases.account.business import AccountBusiness
@@ -6,7 +5,6 @@ from src.use_cases.account.business import AccountBusiness
 from tests._common.use_case import BaseUseCaseBusinessTest
 
 
-@pytest.mark.order(30000)
 class TestAccountBusiness(BaseUseCaseBusinessTest):
     business_class = AccountBusiness
 

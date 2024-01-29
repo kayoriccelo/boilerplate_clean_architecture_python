@@ -1,4 +1,4 @@
-import pytest
+
 from http.client import INTERNAL_SERVER_ERROR, OK
 
 from src.infrastructure.api.django.account.serializers import AccountSerializer
@@ -7,7 +7,6 @@ from src.interface.controllers.account.controller import AccountController
 from tests._common.controller import BaseControllerTest
 
 
-@pytest.mark.order(40000)
 class TestAccountController(BaseControllerTest):
     controller_class = AccountController
     serializer_class = AccountSerializer

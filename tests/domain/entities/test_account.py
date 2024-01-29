@@ -1,5 +1,4 @@
 
-import pytest
 from datetime import datetime
 
 from src.domain.entities.account import Account
@@ -7,7 +6,6 @@ from src.domain.entities.account import Account
 from tests._common.entity import BaseEntityTest
 
 
-@pytest.mark.order(10000)
 class TestAccountEntity(BaseEntityTest):
     def test_create(self, account_data):
         account = Account(**account_data)

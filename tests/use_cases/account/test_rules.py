@@ -1,12 +1,9 @@
-import pytest
-
 from src.core.exceptions import SystemException, UseCaseRuleException
 from src.use_cases.account.rules import AccountRules
 
 from tests._common.use_case import BaseUseCaseRuleTest
 
 
-@pytest.mark.order(20000)
 class TestAccountRules(BaseUseCaseRuleTest):
     rules_class = AccountRules
     
