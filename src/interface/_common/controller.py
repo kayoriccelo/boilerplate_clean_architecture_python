@@ -1,3 +1,4 @@
+import json
 import sys
 from http.client import INTERNAL_SERVER_ERROR, OK
 from typing import Tuple
@@ -10,9 +11,11 @@ from src.core.messages import INCONSISTENCY_MESSAGE_FOUND, INCONSISTENCY_MESSAGE
 
 class BaseController:
     business_class = None
+    persenter_class = None
     
-    def __init__(self, repository: object):
+    def __init__(self, repository: object, serializer_class: object):
         self.business = self.business_class(repository)
+        self.presenter = self.persenter_class(serializer_class)
 
     def _send_email_error(self, exception: Exception):
         exc_type, exc_value, exc_traceback = sys.exc_info()
@@ -74,12 +77,22 @@ class BaseController:
 
     def get(self, pk: int) -> Tuple[dict, int]:
         def do_get():
-            return self.business.get(pk)
+            result = self.business.get(pk)
+
+            return self.presenter.parse(result)
         
         return self._to_try(do_get)
 
     def list(self, page: int, page_size: int) -> Tuple[list, int]:
         def do_list():
-            return self.business.get_availables(page, page_size)
+            payload = self.business.get_availables(page, page_size)
+
+            data = ([self.presenter.parse(item) for item in payload['results']])
+
+            return {
+                'results': data,
+                'count': payload['count'],
+                'pages': payload['pages']
+            }
         
         return self._to_try(do_list)
