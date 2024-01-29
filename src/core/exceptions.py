@@ -5,13 +5,16 @@ class SystemException(Exception):
         self.message = message
 
 
-class ValueObjectExcepiton(SystemException): pass
+class ValueObjectException(SystemException): pass
 
 
 class EntityException(SystemException): pass
 
 
 class UseCaseRuleException(SystemException): pass
+
+
+class UseCaseStateException(SystemException): pass
 
 
 class UseCaseBusinessException(SystemException): pass

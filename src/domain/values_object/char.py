@@ -1,5 +1,5 @@
 
-from src.core.exceptions import ValueObjectExcepiton
+from src.core.exceptions import ValueObjectException
 from src.domain._common.values_object import ValueObject
 
 
@@ -14,9 +14,9 @@ class CharValue(ValueObject):
     def __set__(self, instance, value=None):
         if type(value) == str:
             if len(value) > self.max_length:
-                ValueObjectExcepiton(f'The maximum length is {self.max_length}.')
+                ValueObjectException(f'The maximum length is {self.max_length}.')
 
         else:
-            ValueObjectExcepiton('Format invalid.')
+            ValueObjectException('Format invalid.')
             
         setattr(instance, self.targe_name, value)

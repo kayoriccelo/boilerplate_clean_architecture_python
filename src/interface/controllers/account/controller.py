@@ -3,12 +3,14 @@ from src.interface._common.controller import BaseController
 from src.interface.controllers.account.validators import (
     AccountCreateValidator, AccountUpdateValidator
 )
+from src.interface.presenters.account import AccountPresenter
 from src.use_cases.account.business import AccountBusiness
 from src.domain.entities.account import Account
 
 
 class AccountController(BaseController):
     business_class = AccountBusiness
+    presenter_class = AccountPresenter
 
     def create(self, **kwargs) -> int:
         def do_create():
@@ -17,7 +19,9 @@ class AccountController(BaseController):
 
             account = Account(**validator.data)
 
-            return self.business.create(instance=account, repository=self.business.repository)
+            payload = self.business.create(instance=account, repository=self.business.repository)
+
+            return self.presenter.parse(payload)
 
         return self._to_try(do_create)
 
@@ -28,7 +32,9 @@ class AccountController(BaseController):
 
             account = Account(**validator.data)
 
-            return self.business.update(instance=account, repository=self.business.repository)
+            payload = self.business.update(instance=account, repository=self.business.repository)
+        
+            return self.presenter.parse(payload)
         
         return self._to_try(do_update)
 

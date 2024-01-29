@@ -10,13 +10,7 @@ class BaseGetViewSet(BaseViewSet, APIView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         payload, status = self.controller.get(kwargs.get('pk'))
 
-        if status == OK:
-            presenter = self.presenter_class(payload)
-
-            data = json.dumps(presenter.data, indent=4)
-
-        else:
-            data = json.dumps(payload, indent=4)
+        data = json.dumps(payload, indent=4)
 
         return HttpResponse(data, content_type='application/json', status=status)
     
@@ -30,17 +24,7 @@ class BaseListViewSet(BaseViewSet, APIView):
 
         payload, status = self.controller.list(page, page_size)
 
-        if status == OK:
-            data = ([self.presenter_class(item).data for item in payload['results']])
-
-            data = json.dumps({
-                'results': data,
-                'count': payload['count'],
-                'pages': payload['pages']
-            }, indent=4)
-        
-        else:
-            data = json.dumps(payload, indent=4)
+        data = json.dumps(payload, indent=4)
 
         return HttpResponse(data, content_type='application/json', status=status)
     

@@ -1,7 +1,7 @@
 
 from datetime import datetime
 
-from src.core.exceptions import ValueObjectExcepiton
+from src.core.exceptions import ValueObjectException
 
 from src.domain._common.values_object import ValueObject
 
@@ -31,7 +31,7 @@ class DateValue(ValueObject):
                         value = datetime.strptime(value, "%Y-%m-%d").date()
 
                 except Exception:
-                    raise ValueObjectExcepiton('format invalid')
+                    raise ValueObjectException('format invalid')
                             
         setattr(instance, self.targe_name, value)
 
@@ -54,6 +54,6 @@ class DateTimeValue(DateValue):
                         value = datetime.strptime(value, "%Y-%m-%dT%H:%M")
 
                 except Exception:
-                    raise ValueObjectExcepiton('format invalid')
+                    raise ValueObjectException('format invalid')
                             
         setattr(instance, self.targe_name, value)
