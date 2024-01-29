@@ -10,7 +10,7 @@ from src.domain.entities.account import Account
 
 class AccountController(BaseController):
     business_class = AccountBusiness
-    persenter_class = AccountPresenter
+    presenter_class = AccountPresenter
 
     def create(self, **kwargs) -> int:
         def do_create():
