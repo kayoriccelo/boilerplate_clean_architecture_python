@@ -1,13 +1,7 @@
 
-from rest_framework import serializers
+from src.interface._common.presenter import BasePresenter
 
 
-class AccountPresenter(serializers.Serializer):
-    id = serializers.IntegerField()
-    created = serializers.DateTimeField()
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
-    number_identity = serializers.CharField()
-    date_birth = serializers.DateField()
-    gender = serializers.IntegerField()
-    status = serializers.IntegerField()
+class AccountPresenter(BasePresenter):
+    def __init__(self, serializer_class: any):
+        self.serializer_class = serializer_class
