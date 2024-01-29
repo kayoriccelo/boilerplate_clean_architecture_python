@@ -9,7 +9,6 @@ from src.interface.controllers import AccountController
 class AccountViewSetMixin:
     repository_class = AccountModelRepository
     controller_class = AccountController
-    presenter_class = AccountPresenter
 
 
 class AccountGetViewSet(AccountViewSetMixin, BaseGetViewSet): pass
