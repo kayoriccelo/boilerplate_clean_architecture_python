@@ -9,12 +9,7 @@ class AccountState(BaseState):
 
     def situation_inactive(self):
         return self.status == StatusAccount.INACTIVE.value
-    
-    def can_create(self, **kwargs):
-        self._kwargs = kwargs
-
-        return self._can
-    
+        
     def can_update(self, **kwargs):
         self._kwargs = kwargs
 
@@ -24,5 +19,7 @@ class AccountState(BaseState):
     
     def can_delete(self, **kwargs):
         self._kwargs = kwargs
+
+        self.execute_callback([self.situation_active])
 
         return self._can

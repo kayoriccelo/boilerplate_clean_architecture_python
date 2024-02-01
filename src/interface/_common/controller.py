@@ -2,21 +2,50 @@ import sys
 from http.client import INTERNAL_SERVER_ERROR, OK
 from typing import Tuple
 
-from src.core.exceptions import (
+from src.core.exceptions.types import (
     RepositoryException, UseCaseRuleException, UseCaseBusinessException, ValidatorException
 )
-from src.core.messages import INCONSISTENCY_MESSAGE_FOUND, INCONSISTENCY_MESSAGE_FOUND_SYSTEM
+from src.core.exceptions.messages import (
+    INCONSISTENCY_MESSAGE_FOUND, INCONSISTENCY_MESSAGE_FOUND_SYSTEM
+)
 
 
 class BaseController:
+    """
+    The BaseController class is a base class for all controllers in the application. It provides
+    a set of common methods and functionality that can be used by all controllers.
+
+    Attributes:
+        business_class (object): The business class that is used to perform business logic.
+        presenter_class (object): The presenter class that is used to present data to the user.
+
+    """
+
     business_class = None
     presenter_class = None
-    
+
     def __init__(self, repository: object, serializer_class: object):
+        """
+        Initialize the BaseController class.
+
+        Args:
+            repository (object): The repository class that is used to access the database.
+            serializer_class (object): The serializer class that is used to serialize data.
+
+        """
+
         self.business = self.business_class(repository)
         self.presenter = self.presenter_class(serializer_class)
 
     def _send_email_error(self, exception: Exception):
+        """
+        Simulate sending an email when an exception occurs.
+
+        Args:
+            exception (Exception): The exception that was raised.
+
+        """
+
         exc_type, exc_value, exc_traceback = sys.exc_info()
         trace = exception.__traceback__
 
@@ -48,43 +77,93 @@ class BaseController:
         """)
 
     def _to_try(self, callback):
+        """
+        A helper function that wraps a function in a try/except block.
+
+        Args:
+            callback (function): The function that is being wrapped.
+
+        Returns:
+            tuple: A tuple containing the result of the function and the HTTP status code.
+
+        """
+
         try:
             payload = callback()
 
         except ValidatorException as err:
-            return {'type': 'validator', 'message': err.message, 'errors': err.errors}, INTERNAL_SERVER_ERROR.value
-        
+            return {
+                'type': 'validator',
+                'message': err.message,
+                'errors': err.errors
+            }, INTERNAL_SERVER_ERROR.value
+
         except UseCaseRuleException as err:
-            return {'type': 'rule', 'message': err.message}, INTERNAL_SERVER_ERROR.value
-               
+            return {
+                'type': 'rule',
+                'message': err.message
+            }, INTERNAL_SERVER_ERROR.value
+
         except UseCaseBusinessException as err:
             self._send_email_error(err)
-            
-            return {'type': 'business', 'message': INCONSISTENCY_MESSAGE_FOUND % err.message}, INTERNAL_SERVER_ERROR.value
+
+            return {
+                'type': 'business',
+                'message': INCONSISTENCY_MESSAGE_FOUND % err.message
+            }, INTERNAL_SERVER_ERROR.value
 
         except RepositoryException as err:
             self._send_email_error(err)
-            
-            return {'type': 'repository', 'message': INCONSISTENCY_MESSAGE_FOUND_SYSTEM}, INTERNAL_SERVER_ERROR.value
+
+            return {
+                'type': 'repository',
+                'message': INCONSISTENCY_MESSAGE_FOUND_SYSTEM
+            }, INTERNAL_SERVER_ERROR.value
 
         except Exception as err:
             self._send_email_error(err)
-            
-            return {'type': 'generic', 'message': INCONSISTENCY_MESSAGE_FOUND_SYSTEM}, INTERNAL_SERVER_ERROR.value
-        
+
+            return {
+                'type': 'generic',
+                'message': INCONSISTENCY_MESSAGE_FOUND_SYSTEM
+            }, INTERNAL_SERVER_ERROR.value
+
         return payload, OK.value
 
     def get(self, pk: int) -> Tuple[dict, int]:
+        """
+        Get a record by its primary key.
+
+        Args:
+            pk (int): The primary key of the record to be retrieved.
+
+        Returns:
+            tuple: A tuple containing the record data and the HTTP status code.
+
+        """
+
         def do_get():
             result = self.business.get(pk)
 
             return self.presenter.parse(result)
-        
+
         return self._to_try(do_get)
 
     def list(self, page: int, page_size: int) -> Tuple[list, int]:
+        """
+        Get a list of records.
+
+        Args:
+            page (int): The page number.
+            page_size (int): The number of records per page.
+
+        Returns:
+            tuple: A tuple containing the list of records and the HTTP status code.
+
+        """
+        
         def do_list():
-            payload = self.business.get_availables(page, page_size)
+            payload = self.business.available(page, page_size)
 
             data = ([self.presenter.parse(item) for item in payload['results']])
 
@@ -93,5 +172,5 @@ class BaseController:
                 'count': payload['count'],
                 'pages': payload['pages']
             }
-        
+
         return self._to_try(do_list)

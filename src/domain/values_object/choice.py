@@ -11,4 +11,4 @@ class ChoiceValue(ValueObject):
         super().__init__(**kwargs)
 
     def __set__(self, instance, value=None):            
-        setattr(instance, self.targe_name, value)
+        setattr(instance, self.target_name, value)

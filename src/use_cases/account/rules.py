@@ -1,4 +1,5 @@
 
+from src.core.exceptions.messages import ALREADY_CREATED_MESSAGE_EXCEPTION
 from src.use_cases._common.rules import BaseRules
 
 
@@ -10,7 +11,7 @@ class AccountRules(BaseRules):
         account_exists = repository.account_exists(account)
 
         if account_exists:
-            return self.execute_exception('account already created')
+            return self.execute_exception(ALREADY_CREATED_MESSAGE_EXCEPTION % 'account')
         
         return False
     
