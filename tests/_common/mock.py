@@ -1,5 +1,5 @@
 
-from src.core.exceptions import RepositoryException
+from src.core.exceptions.types import RepositoryException
 
 
 class BaseMock:

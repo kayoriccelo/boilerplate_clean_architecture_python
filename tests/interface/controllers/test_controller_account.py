@@ -1,5 +1,6 @@
 
 from http.client import INTERNAL_SERVER_ERROR, OK
+from src.core.exceptions.messages import INFORMATION_REQUIRED_MESSAGE_EXCEPTION
 
 from src.infrastructure.api.django.account.serializers import AccountSerializer
 from src.interface.controllers.account.controller import AccountController
@@ -18,7 +19,7 @@ class TestAccountController(BaseControllerTest):
         
         assert 'type' in payload and payload['type'] == 'validator'
 
-        assert 'message' in payload and payload['message'] == 'information required.'
+        assert 'message' in payload and payload['message'] == INFORMATION_REQUIRED_MESSAGE_EXCEPTION
 
     def test_create(self, account_data, account_entity, account_controller):
         payload, status = account_controller.create(**account_data)

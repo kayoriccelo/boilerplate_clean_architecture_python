@@ -1,8 +1,10 @@
+
 import json
 from http.client import OK
 from django.http import HttpRequest, HttpResponse
 from rest_framework.views import APIView
 
+from src.core.messages import OPERATION_SUCCESS_MESSAGE
 from src.infrastructure._common.views import BaseViewSet
 
 
@@ -36,7 +38,7 @@ class BaseCreateViewSet(BaseViewSet, APIView):
         payload, status = self.controller.create(**params)
 
         if status == OK:
-            data = json.dumps({'message': 'Operation carried out successfully.'}, indent=4)
+            data = json.dumps({'message': OPERATION_SUCCESS_MESSAGE}, indent=4)
 
         else:
             data = json.dumps(payload, indent=4)
@@ -51,7 +53,7 @@ class BaseUpdateViewSet(BaseViewSet, APIView):
         payload, status = self.controller.update(**params)
 
         if status == OK:
-            data = json.dumps({'message': 'Operation carried out successfully.'}, indent=4)
+            data = json.dumps({'message': OPERATION_SUCCESS_MESSAGE}, indent=4)
 
         else:
             data = json.dumps(payload, indent=4)
@@ -64,7 +66,7 @@ class BaseDeleteViewSet(BaseViewSet, APIView):
         payload, status = self.controller.delete(kwargs.get('pk'))
 
         if status == OK:
-            data = json.dumps({'message': 'Operation carried out successfully.'}, indent=4)
+            data = json.dumps({'message': OPERATION_SUCCESS_MESSAGE}, indent=4)
         
         else:
             data = json.dumps(payload, indent=4)    
@@ -82,7 +84,7 @@ class BaseActionViewSet(BaseViewSet, APIView):
         payload, status = self.do_action(**params)
 
         if status == OK:
-            data = json.dumps({'message': 'Operation carried out successfully.'}, indent=4)
+            data = json.dumps({'message': OPERATION_SUCCESS_MESSAGE}, indent=4)
 
         else:
             data = json.dumps(payload, indent=4)
