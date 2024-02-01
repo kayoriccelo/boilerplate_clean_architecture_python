@@ -1,5 +1,11 @@
 
-from src.core.exceptions import UseCaseBusinessException
+import copy
+import pytest
+
+from src.core.exceptions.messages import (
+    ACCESS_PAGE_LISTING_MESSAGE_EXCEPTION, CREATE_RECORD_MESSAGE_EXCEPTION
+)
+from src.core.exceptions.types import UseCaseBusinessException
 from src.use_cases.account.business import AccountBusiness
 
 from tests._common.use_case import BaseUseCaseBusinessTest
@@ -12,21 +18,18 @@ class TestAccountBusiness(BaseUseCaseBusinessTest):
         try:
             account_business.create(instance=account_entity, repository=account_repository)
 
-            assert True
-
         except UseCaseBusinessException:
             assert False
 
     def test_update(self, account_business, account_entity, account_repository):
         try:
-            instance = account_entity
+            instance = copy.copy(account_entity)
 
             instance.first_name = 'Kayo Update'
             instance.last_name = 'Riccelo Update'
-
             account_business.update(instance=instance, repository=account_repository)
 
-            assert True
+            del instance
 
         except UseCaseBusinessException:
             assert False
@@ -35,49 +38,36 @@ class TestAccountBusiness(BaseUseCaseBusinessTest):
         try:
             account_business.get(account_data['id'])
 
-            assert True
-
         except UseCaseBusinessException:
             assert False
 
     def test_get_create_the_record(self, account_data, account_business):
-        entity_class = account_business.entity_class
-        account_business.entity_class = None
-        
+        with pytest.raises(UseCaseBusinessException) as info:
+            business = copy.copy(account_business)
+
+            business.entity_class = None
+            business.get(account_data['id'])
+
+            del business
+
+        assert info.value.message == CREATE_RECORD_MESSAGE_EXCEPTION
+
+    def test_available(self, account_business):
         try:
-            account_business.get(account_data['id'])
-
-            assert True
-
-        except UseCaseBusinessException as err:
-            assert err.message == 'create the record'
-        
-        finally:
-            account_business.entity_class = entity_class
-
-    def test_get_availables(self, account_business):
-        try:
-            account_business.get_availables(0, 10)
-
-            assert True
+            account_business.available(0, 10)
 
         except UseCaseBusinessException:
             assert False
 
-    def test_get_availables_access_page_listing(self, account_business):
-        try:
-            account_business.get_availables(-1, -1)
+    def test_available_access_page_listing(self, account_business):
+        with pytest.raises(UseCaseBusinessException) as info:
+            account_business.available(-1, -1)
 
-            assert False
-
-        except UseCaseBusinessException as err:
-            assert err.message == 'access page -1 of the listing'
+        assert info.value.message == ACCESS_PAGE_LISTING_MESSAGE_EXCEPTION % -1
 
     def test_delete(self, account_business, account_entity):
         try:
             account_business.delete(instance=account_entity)
-
-            assert True
 
         except UseCaseBusinessException:
             assert False
