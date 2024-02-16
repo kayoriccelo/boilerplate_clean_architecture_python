@@ -1,30 +1,30 @@
-<h1 align="center">Boilerplate - Clean Archtecture for Python</h1>
+<h1 align="center">Boilerplate - Arquitetura Limpa para Python</h1>
 
-<p align="center"><i>Repository for projects that use clean architecture.</i></p>
+<p align="center"><i>Repositório para projetos que utilizam arquitetura limpa.</i></p>
 
-[![ptBr](https://img.shields.io/badge/lang-pt-green)](README.pt-br.md)
+[![en](https://img.shields.io/badge/lang-en-red)](README.md)
 ![Static Badge](https://img.shields.io/badge/python-3.8-blue)
 ![Static Badge](https://img.shields.io/badge/orm-django-3fb950)
 ![Static Badge](https://img.shields.io/badge/test-pytest-orange)
 ![Static Badge](https://img.shields.io/badge/env-docker-blue)
 ![Static Badge](https://img.shields.io/badge/tools-vscode-1158c7)
 
-## About this project
+## Sobre este projeto
 
-  This is a repository that serves as a reference for projects that use clean architecture in python.
+  Este é um repositório usado para ser uma referência para projetos que iram utilizar arquitetura limpa em python.
 
-  It uses the 4 layers of clean architecture subdiveded into:
-  - Domain: where there is an entity layer.
-  - Use case: with layers of business, rules and state.
-  - Interface: with controller and presenter layers.
-  - Infrastructure: with API and ORM layers.
+  Utilizando as 4 camadas da arquitetura limpa subdivido em: 
+  - Domínio: onde possui a camada entidade.
+  - Caso de uso: com as camadas de negócio, regra e estado. 
+  - Interface: com as camadas de controlador e apresentador.
+  - Infraestrutura: com os externos API e ORM
 
-## Layers
+## Camadas
 
-- ### 1 - Domain
-    #### 1.1 - Entity is where the system rules are concentrated.
-
-    _There is a base class called **BaseEntity**, this class provides basic functionalily for an entity, including functionality to convert an entity to a dictionary._
+- ### 1 - Domínio
+    #### 1.1 - Entity é onde está concentrada as regras do sistema.
+    
+    _Existe uma classe base chamada **BaseEntity**, está classe fornece as funcionalidades básicas para uma entidade, incluindo a funcionalidade de converter uma entidade em um dicionário._
 
     ```python
     class BaseEntity:
@@ -48,7 +48,7 @@
             return dictionary
     ```
 
-    Example:
+    Exemplo:
 
     ```python
     class Account(BaseEntity):
@@ -62,7 +62,7 @@
         status = ChoiceValue(enum=StatusAccount, default=StatusAccount.ACTIVE.value)
     ```
 
-    _It also has a metaclass called **EntityMetaclass**, this class is responsible for invoking the set_name method of attributes typed with **ValueObject**._
+    _Também possui uma classe meta chamada **EntityMetaclass**, está classe é responsável por invocar o método set_name dos atributos tipados com **ValueObject**._
 
     ```python
     class EntityMetaclass(type):
@@ -74,7 +74,7 @@
                     attribute.set_name(f'__{name}', key)
     ```
 
-    _The **ValueObject** seen previously has the main function of encapsulating attributes with prefix and key, improving the performance of instances when fed or consulted, it is also possible to create rules per attribute._
+    _O **ValueObject** visto anteriormente tem como papel principal encapsular com prefixo e chave os atributos melhorando a desempenho das instâncias ao serem alimentadas ou consultadas, também é possível criar regras por atributo._
 
     ```python
     class ValueObject:
@@ -103,7 +103,7 @@
             setattr(instance, self.target_name, value)
     ```
 
-    Example:
+    Exemplo:
 
     ```python
     class CharValue(ValueObject):
@@ -125,11 +125,10 @@
             setattr(instance, self.target_name, value)
     ```
 
+- ### 2 - Caso de uso
+    #### 2.1 - Rule é onde se encontra as regras relacionadas ao negócio/business.
 
-- ### 2 - Use case
-    #### 2.1 - Rules is where you find business rules.
-
-    _There is a base class called **BaseRules**, this class is responsible for providing methods to assist in checking the rules and executing exceptions if they exist, it also has a method to assist in collecting data in kwargs._
+    _Existe uma classe base chamada **BaseRules**, está classe é responsável por fornecedor métodos para auxiliar na verificação das regras e na execução de exceções caso existam, também possui um método para auxiliar na coleta de dados no kwargs._
 
     ```python
     class BaseRules:
@@ -162,7 +161,7 @@
 
     ```
 
-    Example:
+    Exemplo:
 
     ```python
     class AccountRules(BaseRules):
@@ -185,11 +184,13 @@
             return self._can
     ```
 
-    #### 2.2 - State is where status permissions are controlled.
+    #### 2.2 - State é onde será controlado as permissões por situação.
+    
+    <!-- _Existe uma classe base chamada **BaseState**, está classe é responsável por realizar as permissões referênte ao negócio conforme a situação atual da entidade._ -->
 
-    #### 2.3 - Business is where you find business rules.
+    #### 2.3 - Business é onde será realizado a lógica de negócio do sistema.
 
-    _There is a base class called **BaseBusiness**, this class is mainly responsible for carrying out the system's business logic, it is also responsible for interacting with the data storage._
+    _Existe uma classe base chamada **BaseBusiness**, está classe é tem como principal responsabilidade realizar a lógica de negócio do sistema, também é responsável por interagir com o armazenamento de dados._
 
     ```python
     class BaseBusiness:
@@ -261,7 +262,7 @@
 
     ```
 
-    Example:
+    Exemplo:
 
     ```python
     class AccountBusiness(BaseBusiness):
@@ -379,7 +380,7 @@
 
     ```
 
-    Example:
+    Exemplo:
 
     ```python
     class AccountController(BaseController):
@@ -422,7 +423,7 @@
             return self.data
     ```
 
-    Example:
+    Exemplo:
 
     ```python
     class AccountPresenter(BasePresenter):
@@ -430,18 +431,21 @@
             self.serializer_class = serializer_class
     ```
 
-- ### 4 - Infrastructure
+- ### 4 - Infraestrutura
     #### 4.1 - API
     #### 4.2 - ORM
 
-## Installation
+## Instalação
 
-## References
+## Referências
   - [Encapsulamento com Descritores em Python](https://pt.slideshare.net/ramalho/encapsulamento-com-descritores-em-python)
   - [LIVE: Clean Architecture](https://metal-flea-041.notion.site/LIVE-Clean-Architecture-79e14d28f54c4484bcce129c1fd80591)
   - [Implementing Clean Architecture - Of controllers and presenters](https://www.plainionist.net/Implementing-Clean-Architecture-Controller-Presenter/)
   - [A quick introduction to clean architecture](https://www.freecodecamp.org/news/a-quick-introduction-to-clean-architecture-990c014448d2/)
   - [Python & the Clean Architecture in 2021](https://breadcrumbscollector.tech/python-the-clean-architecture-in-2021/)
 
-
 ## Diagram
+
+<!-- ![boilerplate_clean_architecture_python drawio](https://github.com/kayoriccelo/boilerplate_clean_architecture_python/assets/19672365/6faabac4-a728-4c68-aef1-fe13f1fe4cbe) -->
+
+
