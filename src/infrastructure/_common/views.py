@@ -12,6 +12,7 @@ class BaseViewSet:
     repository_class = None
     controller_class = None
     presenter_class = None
+    serializer_class = None
 
     def __start_repository(self) -> any:
         """Method to instantiate the repository."""
@@ -30,7 +31,7 @@ class BaseViewSet:
         repository = self.__start_repository()
 
         try:
-            self.controller = self.controller_class(repository)
+            self.controller = self.controller_class(repository, self.serializer_class)
 
         except Exception as err:
             raise ViewsetException(

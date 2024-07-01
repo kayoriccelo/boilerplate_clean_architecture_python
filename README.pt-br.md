@@ -11,17 +11,25 @@
 
 ## Sobre este projeto
 
-  Este é um repositório usado como uma referência para projetos que iram utilizar arquitetura limpa em python.
+ ## Introdução
+  
+  Este repositório oferece um boilerplate para auxiliar na implementação da Arquitetura Limpa em projetos Python. A Arquitetura Limpa é uma abordagem de design de software que visa criar sistemas flexíveis, fáceis de manter e testáveis.
 
-  Abaixo será mostrada as 4 camadas da arquitetura limpa usadas nesse boilerplate, subdivido em: 
-  - Domain: onde possui a camada de Entity.
-  - Use Case: com as camadas de State, Rule e Business. 
-  - Interface: com as camadas de Controller e Presenter.
-  - Infrastructure: com os externos API e ORM
+ ## Benefícios
+
+ - Flexibilidade: Os sistemas implementados com a Arquitetura Limpa são mais fáceis de modificar e adaptar às mudanças nos requisitos.
+ - Manutenabilidade: O código é mais fácil de entender e modificar, o que facilita a manutenção do sistema.
+ - Testabilidade: Os componentes do sistema são mais fáceis de testar em isolamento, o que resulta em testes mais confiáveis.
+
+ ## Recursos
+
+ - Camadas: O código é organizado em camadas bem definidas, cada uma com suas próprias responsabilidades.
+ - Padrões de Projeto: O boilerplate utiliza padrões de projeto como State, Builder e Value Object para melhorar a flexibilidade e a testabilidade do código.
+ - Ferramentas: O boilerplate inclui ferramentas para auxiliar na geração de código, validação de dados e testes.
 
 ## Camadas
 
-- ### 1 - Domain
+- ### 1 - Domain - Esta camada contém as entidades e regras de negócio do sistema.
 
     #### 1.1 - Na camada Entity está concentrada as regras de negócio do sistema.
 
@@ -132,7 +140,7 @@
             setattr(instance, self.target_name, value)
     ```
 
-- ### 2 - Use Case
+- ### 2 - Use Case - Esta camada contém os casos de uso do sistema, que implementam a lógica de negócio.
     
     Um caso de uso é um objeto que tem uma ou mais funções que implementam as regras de negócio específicas da aplicação. Também tem
     elementos de dados que incluem os dados de entrada, os dados de saída e as referências para as devidas Entidades com as quais interage.
@@ -406,7 +414,7 @@
 
     ```
 
-- ### 3 - Interface
+- ### 3 - Interface - Esta camada contém os adaptadores que convertem dados entre as camadas de negócio e as camadas de infraestrutura.
     A inteface tem como principal papel converter dados no formato que seja mais conveniente para os casos de usos e entidades, também tem o papel de converter os dados no formato mais conveniente para infrastructure (frameworks e drivers).
 
     > _**NOTA:** Se você estiver procurando informações sobre **Adaptadores de interface**, consulte as páginas 209 e 210 do livro **Arquitetura Limpa - O Guia do Artesão para Estrutura e Design de Software (Robert C. Martin)**._
@@ -559,11 +567,43 @@
             self.serializer_class = serializer_class
     ```
 
-- ### 4 - Infrastructure 
+- ### 4 - Infrastructure - Esta camada contém os drivers e frameworks que interagem com os recursos externos, como bancos de dados e APIs.
+
     #### 4.1 - API
     #### 4.2 - ORM
 
 ## Instalação
+
+#### Opção 1: Utilizando Docker Compose
+ 
+Este projeto oferece uma configuração pronta para Docker Compose, facilitando a instalação e execução do ambiente de desenvolvimento. Se você já possui o Docker instalado e configurado, siga estes passos:
+
+- Abra um terminal na pasta raiz do projeto.
+- Execute o comando docker-compose up para iniciar o serviço web.
+- Este comando irá construir a imagem do serviço web utilizando o Dockerfile presente no diretório e, em seguida, executá-lo.
+- Abra seu navegador e acesse http://localhost:8000 para visualizar a aplicação.
+
+Observação:
+
+A porta 5678 é mapeada para permitir a depuração remota usando debugpy. Consulte a documentação do seu IDE para configurar a depuração remota nesta porta.
+
+#### Opção 2: Instalação Manual (sem Docker)
+
+Para desenvolvedores que preferem a instalação manual, siga estes passos:
+
+- Crie um ambiente virtual Python.
+- Você pode utilizar ferramentas como venv ou virtualenv para criar e gerenciar o ambiente virtual.
+- Ative o ambiente virtual.
+- Os comandos para ativar o ambiente virtual variam de acordo com a ferramenta utilizada.
+- Instale as dependências do projeto.
+- Execute o comando pip install -r requirements.txt para instalar as bibliotecas necessárias para o projeto.
+
+#### Considerações:
+
+Este projeto utiliza Python 3.8. Certifique-se de ter a versão correta instalada em seu sistema.
+A instalação manual requer configuração adicional para depuração remota.
+Escolha a opção que melhor se adequa ao seu fluxo de trabalho.
+
 
 ## Referências
   - [Encapsulamento com Descritores em Python](https://pt.slideshare.net/ramalho/encapsulamento-com-descritores-em-python)
