@@ -24,11 +24,13 @@ CREATE_LISTING_RECORD_MESSAGE_EXCEPTION = "create listing records"
 
 ACCESS_PAGE_LISTING_MESSAGE_EXCEPTION = "access page %s of the listing"
 
-NOT_FOUND_IN_MESSAGE_EXCEPTION = "%s  not found in  %s"
+NOT_FOUND_IN_MESSAGE_EXCEPTION = "%s not found in %s"
 
 ALREADY_CREATED_MESSAGE_EXCEPTION = "%s already exists"
 
 OPERATION_WITHOUT_PERMISSION_MESSAGE_EXCEPTION = "Operation without permission"
+
+CHANGE_STATUS_NOT_ALLOWED_MESSAGE_EXCEPTION = "change of status not allowed"
 
 THERE_ARE_OUTSTANDING_CRITICISMS_MESSAGE_EXCEPTION = (
     "There are outstanding criticisms"
