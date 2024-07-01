@@ -1,22 +1,11 @@
 
 from datetime import datetime
-from enum import Enum
 
 from src.domain._common.entity import BaseEntity
+from src.domain.entities.enums import GenderAccount, StatusAccount
 from src.domain.values_object import (
     UUIDValue, DateTimeValue, CharValue, ChoiceValue, DateValue
 )
-
-
-
-class StatusAccount(Enum):
-    ACTIVE = 1
-    INACTIVE = 2
-
-
-class GenderAccount(Enum):
-    MALE = 1
-    FEMALE = 2
 
 
 class Account(BaseEntity):
