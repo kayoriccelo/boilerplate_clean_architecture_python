@@ -3,28 +3,33 @@
 <p align="center"><i>Repositório para projetos que utilizam arquitetura limpa.</i></p>
 
 [![en](https://img.shields.io/badge/lang-en-red)](README.md)
-![Static Badge](https://img.shields.io/badge/python-3.8-blue)
-![Static Badge](https://img.shields.io/badge/orm-django-3fb950)
-![Static Badge](https://img.shields.io/badge/test-pytest-orange)
-![Static Badge](https://img.shields.io/badge/env-docker-blue)
-![Static Badge](https://img.shields.io/badge/tools-vscode-1158c7)
+[![Static Badge](https://img.shields.io/badge/python-3.8-blue)](https://docs.python.org/3.8/)
+[![Static Badge](https://img.shields.io/badge/framework-django-3fb950)](https://docs.djangoproject.com/pt-br/4.2/)
+[![Static Badge](https://img.shields.io/badge/test-pytest-orange)](https://docs.pytest.org/en/7.4.x/contents.html)
+[![Static Badge](https://img.shields.io/badge/env-docker-blue)](https://docs.docker.com/)
+[![Static Badge](https://img.shields.io/badge/tools-vscode-1158c7)](https://code.visualstudio.com/docs)
 
 ## Sobre este projeto
 
-  Este é um repositório usado para ser uma referência para projetos que iram utilizar arquitetura limpa em python.
+  Este é um repositório usado como uma referência para projetos que iram utilizar arquitetura limpa em python.
 
-  Utilizando as 4 camadas da arquitetura limpa subdivido em: 
-  - Domínio: onde possui a camada entidade.
-  - Caso de uso: com as camadas de negócio, regra e estado. 
-  - Interface: com as camadas de controlador e apresentador.
-  - Infraestrutura: com os externos API e ORM
+  Abaixo será mostrada as 4 camadas da arquitetura limpa usadas nesse boilerplate, subdivido em: 
+  - Domain: onde possui a camada de Entity.
+  - Use Case: com as camadas de State, Rule e Business. 
+  - Interface: com as camadas de Controller e Presenter.
+  - Infrastructure: com os externos API e ORM
 
 ## Camadas
 
-- ### 1 - Domínio
-    #### 1.1 - Entity é onde está concentrada as regras do sistema.
+- ### 1 - Domain
+
+    #### 1.1 - Na camada Entity está concentrada as regras de negócio do sistema.
+
+    Uma Entidade é um objeto do sistema que possui um pequeno conjunto de regras cruciais de negócios genéricas que operam com base em dados, também contém os dados cruciais de negócios ou tem acesso muito fácil a esses dados.
+
+    > _**NOTA I:** Se você estiver procurando informações sobre Entidade, consulte as páginas 198 e 209 do livro **Arquitetura Limpa - O Guia do Artesão para Estrutura e Design de Software (Robert C. Martin)**._
     
-    _Existe uma classe base chamada **BaseEntity**, está classe fornece as funcionalidades básicas para uma entidade, incluindo a funcionalidade de converter uma entidade em um dicionário._
+    Abaixo será exibida uma classe base chamada **BaseEntity**, está classe fornece as funcionalidades básicas para uma entidade, incluindo a funcionalidade de converter uma entidade em um dicionário.
 
     ```python
     class BaseEntity:
@@ -62,7 +67,9 @@
         status = ChoiceValue(enum=StatusAccount, default=StatusAccount.ACTIVE.value)
     ```
 
-    _Também possui uma classe meta chamada **EntityMetaclass**, está classe é responsável por invocar o método set_name dos atributos tipados com **ValueObject**._
+    Também possui uma classe meta chamada **EntityMetaclass**, está classe é responsável por invocar o método set_name dos atributos tipados com **ValueObject**.
+
+    > _**NOTA II:** Se você estiver procurando informações sobre Encapsulamento com Descritores, consulta [Encapsulamento com Descritores em Python](https://pt.slideshare.net/ramalho/encapsulamento-com-descritores-em-python)_ 
 
     ```python
     class EntityMetaclass(type):
@@ -74,7 +81,7 @@
                     attribute.set_name(f'__{name}', key)
     ```
 
-    _O **ValueObject** visto anteriormente tem como papel principal encapsular com prefixo e chave os atributos melhorando a desempenho das instâncias ao serem alimentadas ou consultadas, também é possível criar regras por atributo._
+    O **ValueObject** visto anteriormente, tem como papel principal de encapsular com prefixo e chave os atributos, melhorando o desempenho das instâncias ao serem alimentadas ou consultadas, também é possível criar validações por atributo.
 
     ```python
     class ValueObject:
@@ -125,39 +132,154 @@
             setattr(instance, self.target_name, value)
     ```
 
-- ### 2 - Caso de uso
-    #### 2.1 - Rule é onde se encontra as regras relacionadas ao negócio/business.
+- ### 2 - Use Case
+    
+    Um caso de uso é um objeto que tem uma ou mais funções que implementam as regras de negócio específicas da aplicação. Também tem
+    elementos de dados que incluem os dados de entrada, os dados de saída e as referências para as devidas Entidades com as quais interage.
 
-    _Existe uma classe base chamada **BaseRules**, está classe é responsável por fornecedor métodos para auxiliar na verificação das regras e na execução de exceções caso existam, também possui um método para auxiliar na coleta de dados no kwargs._
+    > _**NOTA:** Como mencionado anteriormente, a camada de **Use Case** foi dividida em três camadas: **State**, **Rule** e **Business**, facilitando a organização das permissões por situação, regras e negócio. Se você estiver procurando informações sobre **Use Case**, consulte a página 199 e 209 do livro **Arquitetura Limpa - O Guia do Artesão para Estrutura e Design de Software (Robert C. Martin)**._
+
+    #### 2.1 - A camada State controla a mudança de situação e as permissões por situação.
+
+    O **State** é um padrão de projeto comportamental que permite que um objeto altere o comportamento quando seu estado interno for alterado. 
+    
+    > _**NOTA I:** Se você estiver procurando informações sobre o padrão **_State_**, consulte [State em Python / Padrões de Projeto](https://refactoring.guru/pt-br/design-patterns/state/python/example)._
+    
+    Abaixo será exibido 
+     classe base chamada **BaseState**, está classe é responsável por fornecedor métodos para auxiliar na mudança de situação do objeto e o controle das permissões conforme a situação atual, também possui métodos para auxiliar na execução de exceções e coleta de dados no kwargs.
+
+    ```python
+    class BaseState:
+        _exception: bool = True
+        _can: bool = True
+        _kwargs: dict = {}
+        _field_name: str = 'status'
+        _status_permission: list = []
+        _instance: object = None
+
+        def __init__(self, instance) -> None:
+            self._instance = instance
+
+        def _get_value_in_kwargs(self, name: str, required: bool = True) -> any:
+            value = self._kwargs.get(name, None)
+
+            if not value and required:
+                raise SystemException(None, NOT_FOUND_IN_MESSAGE_EXCEPTION % (name, type(self).__name__))
+
+            return value
+
+        def execute_exception(self) -> bool:
+            self._exception = self._kwargs.get('exception', self._exception)
+
+            if not self._can and self._exception:
+                raise UseCaseStateException(None, OPERATION_WITHOUT_PERMISSION_MESSAGE_EXCEPTION)
+
+            return self._can
+        
+        def set_status(self, status):
+            if not status in self._status_permission:
+                raise UseCaseStateException(None, CHANGE_STATUS_NOT_ALLOWED_MESSAGE_EXCEPTION)
+
+            setattr(self._instance, self._field_name, status)
+            self._instance.save()
+    
+    ```
+
+    Exemplo:
+
+    ```python
+    class AccountState(BaseState):
+        def situation_active(self):
+            return self.status == StatusAccount.ACTIVE.value
+
+        def situation_inactive(self):
+            return self.status == StatusAccount.INACTIVE.value
+            
+        def can_update(self, **kwargs):
+            return False
+        
+        def can_delete(self, **kwargs):
+            return False
+
+
+    class AccountActiveState(AccountState):
+        _status_permission = [StatusAccount.INACTIVE.value]
+
+        def can_update(self, **kwargs):
+            return True
+        
+        def can_delete(self, **kwargs):
+            return True
+
+
+    class AccountInactiveState(AccountState):
+        _status_permission = []
+
+    ```
+
+    > _**NOTA II:** A criação do **State** é realizado com auxilio do padrão de projeto criacional **Builder**, que permite a construção de objetos complexos. Se você estiver procurando informações sobre **Builder**, consulte [Builder em Python / Padrões de Projeto](https://refactoring.guru/pt-br/design-patterns/builder/python/example)._
+
+    Abaixo será exibido uma classe base chamada **BaseStateBuilder**, está classe é respónsavel por auxiliar na construção do **State**.
+
+    ```python
+    class BaseBuilder:
+        def build(self, **kwargs) -> object:
+            raise NotImplementedError('Implementation of the required method.')
+
+
+    class BaseStateBuilder(BaseBuilder):
+        STATE_CLASSES = {}
+            
+        def build(self, **kwargs) -> object:
+            state_class = self.STATE_CLASSES.get(kwargs['status'])
+
+            return state_class(kwargs['model_object'])
+    ```
+
+    Exemplo:
+
+    ```python
+    class AccountStateBuilder(BaseStateBuilder):
+        STATE_CLASSES = {
+            StatusAccount.ACTIVE: AccountActiveState,
+            StatusAccount.ACTIVE: AccountInactiveState,
+        }
+    ```
+
+    #### 2.2 - Na camada Rule será implementada as regras relacionadas ao negócio.
+
+    Eu criei essa camada separando as regras do negócio com o intuito de organizar em um único local, fazendo com fique fácil a localização e a manutenção.
+
+    Abaixo será exibida uma classe base chamada **BaseRules**, está classe é responsável por fornecedor métodos para auxiliar na verificação das regras e na execução de exceções caso existam, também possui um método para auxiliar na coleta de dados no kwargs.
 
     ```python
     class BaseRules:
-    _exception: bool = True
-    _can: bool = True
-    _kwargs: dict = {}
+        _exception: bool = True
+        _can: bool = True
+        _kwargs: dict = {}
 
-    def _get_value_in_kwargs(self, name: str, required: bool = True) -> Any:
-        value = self._kwargs.get(name, None)
+        def _get_value_in_kwargs(self, name: str, required: bool = True) -> Any:
+            value = self._kwargs.get(name, None)
 
-        if not value and required:
-            raise SystemException(None, NOT_FOUND_IN_MESSAGE_EXCEPTION % (name, type(self).__name__))
+            if not value and required:
+                raise SystemException(None, NOT_FOUND_IN_MESSAGE_EXCEPTION % (name, type(self).__name__))
 
-        return value
+            return value
 
-    def execute_exception(self, message: str) -> bool:
-        if self._exception:
-            raise UseCaseRuleException("", message)
+        def execute_exception(self, message: str) -> bool:
+            if self._exception:
+                raise UseCaseRuleException("", message)
 
-        return self.can
+            return self.can
 
-    def execute_callback(self, callback: Callable[[], bool]) -> None:
-        self._exception = self._kwargs.get('exception', self._exception)
+        def execute_callback(self, callback: Callable[[], bool]) -> None:
+            self._exception = self._kwargs.get('exception', self._exception)
 
-        if not self._can:
-            self._can = callback()
+            if not self._can:
+                self._can = callback()
 
-        else:
-            callback()
+            else:
+                callback()
 
     ```
 
@@ -184,24 +306,44 @@
             return self._can
     ```
 
-    #### 2.2 - State é onde será controlado as permissões por situação.
-    
-    <!-- _Existe uma classe base chamada **BaseState**, está classe é responsável por realizar as permissões referênte ao negócio conforme a situação atual da entidade._ -->
+    #### 2.3 - Na camada Business encontra-se toda lógica de negócio do sistema.
 
-    #### 2.3 - Business é onde será realizado a lógica de negócio do sistema.
+    Também criei essa camada separando a lógica de negócio das regras com o intuito de organizar em um único local, fazendo com fique fácil a localização e a manutenção.
 
-    _Existe uma classe base chamada **BaseBusiness**, está classe é tem como principal responsabilidade realizar a lógica de negócio do sistema, também é responsável por interagir com o armazenamento de dados._
+    Abaixo será exibida uma classe base chamada **BaseBusiness**, está classe tem como principal responsabilidade realizar a lógica de negócio do sistema, também é responsável por interagir com o armazenamento de dados por meio do **Repository**.
 
     ```python
     class BaseBusiness:
-        entity_class = None
-        rules_class = None
-        state_class = None
+        _kwargs: dict = {}
+        entity_class: any = None
+        rules_class: any = None
+        state_builder_class: any = None
 
         def __init__(self, repository: object):
             self.repository = repository
+
+        @property
+        def state(self):
+            if not hasattr(self, '_state'):
+                builder_state = self.state_builder_class()
+                state = builder_state.build(instance=self._kwargs['instance'])
+
+                setattr(self, '_state', state)
+
+            return getattr(self, '_state')
+
+        @property
+        def _rule(self):
             self.rule = self.rules_class()
-            self.state = self.state_class()
+    ```
+
+    Exemplo:
+
+    ```python
+    class AccountBusiness(BaseBusiness):
+        entity_class = Account
+        rules_class = AccountRules
+        state_builder_class = AccountStateBuilder
 
         def get(self, pk: int) -> object:
             instance = self.repository.get(pk)
@@ -242,6 +384,8 @@
             }
 
         def create(self, **kwargs):
+            self._kwargs = kwargs
+
             self.rule.can_create(**kwargs)
 
             return self.repository.create(kwargs['instance'])
@@ -262,17 +406,12 @@
 
     ```
 
-    Exemplo:
-
-    ```python
-    class AccountBusiness(BaseBusiness):
-        entity_class = Account
-        rules_class = AccountRules
-        state_class = AccountState
-    ```
-  
 - ### 3 - Interface
-    #### 3.1 - Controller
+    A inteface tem como principal papel converter dados no formato que seja mais conveniente para os casos de usos e entidades, também tem o papel de converter os dados no formato mais conveniente para infrastructure (frameworks e drivers).
+
+    > _**NOTA:** Se você estiver procurando informações sobre **Adaptadores de interface**, consulte as páginas 209 e 210 do livro **Arquitetura Limpa - O Guia do Artesão para Estrutura e Design de Software (Robert C. Martin)**._
+
+    #### 3.1 - A camada Controller controla a entrada de dados das solicitações, validando e convertendo para um formato reconhecido pelo negócio.
 
     ```python
     class BaseController:
@@ -282,36 +421,6 @@
         def __init__(self, repository: object, serializer_class: object):
             self.business = self.business_class(repository)
             self.presenter = self.presenter_class(serializer_class)
-
-        def _send_email_error(self, exception: Exception):
-            exc_type, exc_value, exc_traceback = sys.exc_info()
-            trace = exception.__traceback__
-
-            print(f"""
-                *****************************************************
-                
-                WARNING: Exception generated by the system.
-
-                type               : {exc_type.__name__}
-                message            : {exc_value.message if hasattr(exc_value, 'message') else ''}
-                error              : {exc_value.error if hasattr(exc_value, 'error') else ''}
-                tracking lines     : 
-            """)
-
-            while trace is not None:
-                print(f"""
-                    -------------------------------------------------  
-                    ---> path and file name : {trace.tb_frame.f_code.co_filename}
-                    ---> line code          : {trace.tb_lineno}
-                    ---> method name        : {trace.tb_frame.f_code.co_name}
-                    -------------------------------------------------
-                """)
-
-                trace = trace.tb_next
-
-            print(f"""
-                *****************************************************
-            """)
 
         def _to_try(self, callback):
             try:
@@ -331,7 +440,7 @@
                 }, INTERNAL_SERVER_ERROR.value
 
             except UseCaseBusinessException as err:
-                self._send_email_error(err)
+                send_email_error(err)
 
                 return {
                     'type': 'business',
@@ -339,7 +448,7 @@
                 }, INTERNAL_SERVER_ERROR.value
 
             except RepositoryException as err:
-                self._send_email_error(err)
+                send_email_error(err)
 
                 return {
                     'type': 'repository',
@@ -347,7 +456,7 @@
                 }, INTERNAL_SERVER_ERROR.value
 
             except Exception as err:
-                self._send_email_error(err)
+                send_email_error(err)
 
                 return {
                     'type': 'generic',
@@ -355,6 +464,14 @@
                 }, INTERNAL_SERVER_ERROR.value
 
             return payload, OK.value
+    ```
+
+    Exemplo:
+
+    ```python
+    class AccountController(BaseController):
+        business_class = AccountBusiness
+        presenter_class = AccountPresenter
 
         def get(self, pk: int) -> Tuple[dict, int]:
             def do_get():
@@ -364,7 +481,7 @@
 
             return self._to_try(do_get)
 
-        def list(self, page: int, page_size: int) -> Tuple[list, int]:            
+        def list(self, page: int, page_size: int) -> Tuple[list, int]:
             def do_list():
                 payload = self.business.available(page, page_size)
 
@@ -377,15 +494,6 @@
                 }
 
             return self._to_try(do_list)
-
-    ```
-
-    Exemplo:
-
-    ```python
-    class AccountController(BaseController):
-        business_class = AccountBusiness
-        presenter_class = AccountPresenter
 
         def create(self, **kwargs) -> int:
             def do_create():
@@ -400,9 +508,29 @@
 
             return self._to_try(do_create)
 
+        def update(self, **kwargs) -> int:
+            def do_update():
+                validator = AccountUpdateValidator()
+                validator.is_valid(kwargs)
+
+                account = Account(**validator.data)
+
+                payload = self.business.update(instance=account, repository=self.business.repository)
+            
+                return self.presenter.parse(payload)
+            
+            return self._to_try(do_update)
+
+        def delete(self, **kwargs) -> int:
+            def do_delete():
+                return self.business.delete(**kwargs)
+
+            return self._to_try(do_delete)
+
+
     ```
 
-    #### 3.2 - Presenter
+    #### 3.2 - A camada Presenter converte os dados retornado pelo negócio em dicionário.
 
     ```python
     class BasePresenter:    
@@ -431,7 +559,7 @@
             self.serializer_class = serializer_class
     ```
 
-- ### 4 - Infraestrutura
+- ### 4 - Infrastructure 
     #### 4.1 - API
     #### 4.2 - ORM
 
@@ -444,7 +572,7 @@
   - [A quick introduction to clean architecture](https://www.freecodecamp.org/news/a-quick-introduction-to-clean-architecture-990c014448d2/)
   - [Python & the Clean Architecture in 2021](https://breadcrumbscollector.tech/python-the-clean-architecture-in-2021/)
 
-## Diagram
+## Diagrama
 
 <!-- ![boilerplate_clean_architecture_python drawio](https://github.com/kayoriccelo/boilerplate_clean_architecture_python/assets/19672365/6faabac4-a728-4c68-aef1-fe13f1fe4cbe) -->
 

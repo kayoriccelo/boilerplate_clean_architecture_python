@@ -11,15 +11,21 @@ class AccountState(BaseState):
         return self.status == StatusAccount.INACTIVE.value
         
     def can_update(self, **kwargs):
-        self._kwargs = kwargs
-
-        self.execute_callback([self.situation_active])
-
-        return self._can
+        return False
     
     def can_delete(self, **kwargs):
-        self._kwargs = kwargs
+        return False
 
-        self.execute_callback([self.situation_active])
 
-        return self._can
+class AccountActiveState(AccountState):
+    _status_permission = [StatusAccount.INACTIVE.value]
+
+    def can_update(self, **kwargs):
+        return True
+    
+    def can_delete(self, **kwargs):
+        return True
+
+
+class AccountInactiveState(AccountState):
+    _status_permission = []
