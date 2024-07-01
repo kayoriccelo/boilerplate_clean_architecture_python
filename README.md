@@ -1,13 +1,13 @@
-<h1 align="center">Boilerplate - Clean Archtecture for Python</h1>
+<h1 align="center">Boilerplate - Clean Architecture for Python</h1>
 
 <p align="center"><i>Repository for projects that use clean architecture.</i></p>
 
 [![ptBr](https://img.shields.io/badge/lang-pt-green)](README.pt-br.md)
-![Static Badge](https://img.shields.io/badge/python-3.8-blue)
-![Static Badge](https://img.shields.io/badge/orm-django-3fb950)
-![Static Badge](https://img.shields.io/badge/test-pytest-orange)
-![Static Badge](https://img.shields.io/badge/env-docker-blue)
-![Static Badge](https://img.shields.io/badge/tools-vscode-1158c7)
+[![Static Badge](https://img.shields.io/badge/python-3.8-blue)](https://docs.python.org/3.8/)
+[![Static Badge](https://img.shields.io/badge/framework-django-3fb950)](https://docs.djangoproject.com/pt-br/4.2/)
+[![Static Badge](https://img.shields.io/badge/test-pytest-orange)](https://docs.pytest.org/en/7.4.x/contents.html)
+[![Static Badge](https://img.shields.io/badge/env-docker-blue)](https://docs.docker.com/)
+[![Static Badge](https://img.shields.io/badge/tools-vscode-1158c7)](https://code.visualstudio.com/docs)
 
 ## About this project
 
